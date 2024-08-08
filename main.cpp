@@ -6,6 +6,7 @@ using namespace std;
 int main() {
     const int screenWidth = 1000;
     const int screenHeight = 1000;
+    const int squareWidth = screenWidth/8;
 
     InitWindow(screenWidth, screenHeight, "Chessmate");
 
@@ -14,16 +15,18 @@ int main() {
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-        // Draw vertical lines
+        // Draw Board
         for (int i = 0; i <= screenWidth; i+= screenWidth/8) {
-            //DrawLine(100, 0, 100, 1000, BLACK);
-            DrawLine(i, 0, i, 1000, BLACK);
-        }
+            int inc = screenWidth/8;
+            int j = (i%2==0) ? inc : 0;
+            for (; j <= screenWidth; j += inc*2) {
+                DrawRectangle(j, i, squareWidth, squareWidth, DARKPURPLE);
+            }
 
-        // Draw horizontal lines
-        for (int i = 0; i <= screenWidth; i+= screenWidth/8) {
-            //DrawLine(100, 0, 100, 1000, BLACK);
-            DrawLine(0, i, 1000, i, BLACK);
+            j = (i%2==0) ? 0 : inc;
+            for (; j <= screenWidth; j += inc*2) {
+                DrawRectangle(j, i, squareWidth, squareWidth, RAYWHITE);
+            }
         }
 
         EndDrawing();
