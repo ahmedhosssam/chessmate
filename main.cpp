@@ -50,26 +50,23 @@ int main() {
 
 
     InitWindow(screenWidth, screenHeight, "Chessmate");
-    map<string, Texture2D> black_pieces;
-    map<string, Texture2D> white_pieces;
-
     Image b1 = LoadImageSvg("./pieces/black/king.svg", inc, inc);
-    Texture2D t1 = LoadTextureFromImage(b1); black_pieces["king"] = t1;
+    Texture2D t1 = LoadTextureFromImage(b1); 
 
     Image b2 = LoadImageSvg("./pieces/black/pawn.svg", inc, inc);
-    Texture2D t2 = LoadTextureFromImage(b2); black_pieces["pawn"] = t2;
+    Texture2D t2 = LoadTextureFromImage(b2);
 
     Image b3 = LoadImageSvg("./pieces/black/rook.svg", inc, inc);
-    Texture2D t3 = LoadTextureFromImage(b3); black_pieces["rook"] = t3;
+    Texture2D t3 = LoadTextureFromImage(b3);
 
     Image b4 = LoadImageSvg("./pieces/black/bishop.svg", inc, inc);
-    Texture2D t4 = LoadTextureFromImage(b4); black_pieces["bishop"] = t4;
+    Texture2D t4 = LoadTextureFromImage(b4); 
 
     Image b5 = LoadImageSvg("./pieces/black/queen.svg", inc, inc);
-    Texture2D t5 = LoadTextureFromImage(b5); black_pieces["queen"] = t5;
+    Texture2D t5 = LoadTextureFromImage(b5); 
 
     Image b6 = LoadImageSvg("./pieces/black/knight.svg", inc, inc);
-    Texture2D t6 = LoadTextureFromImage(b6); black_pieces["knight"] = t6;
+    Texture2D t6 = LoadTextureFromImage(b6); 
     UnloadImage(b1);
     UnloadImage(b2);
     UnloadImage(b3);
@@ -92,22 +89,22 @@ int main() {
     }
 
     Image w1 = LoadImageSvg("./pieces/white/king.svg", inc, inc);
-    t1 = LoadTextureFromImage(w1); white_pieces["king"] = t1;
+    t1 = LoadTextureFromImage(w1); 
 
     Image w2 = LoadImageSvg("./pieces/white/pawn.svg", inc, inc);
-    t2 = LoadTextureFromImage(w2); white_pieces["pawn"] = t2;
+    t2 = LoadTextureFromImage(w2);
 
     Image w3 = LoadImageSvg("./pieces/white/rook.svg", inc, inc);
-    t3 = LoadTextureFromImage(w3); white_pieces["rook"] = t3;
+    t3 = LoadTextureFromImage(w3); 
 
     Image w4 = LoadImageSvg("./pieces/white/bishop.svg", inc, inc);
-    t4 = LoadTextureFromImage(w4); white_pieces["bishop"] = t4;
+    t4 = LoadTextureFromImage(w4);
 
     Image w5 = LoadImageSvg("./pieces/white/queen.svg", inc, inc);
-    t5 = LoadTextureFromImage(w5); white_pieces["queen"] = t5;
+    t5 = LoadTextureFromImage(w5); 
 
     Image w6 = LoadImageSvg("./pieces/white/knight.svg", inc, inc);
-    t6 = LoadTextureFromImage(w6); white_pieces["knight"] = t6;
+    t6 = LoadTextureFromImage(w6); 
     UnloadImage(w1);
     UnloadImage(w2);
     UnloadImage(w3);
