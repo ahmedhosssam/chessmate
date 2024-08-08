@@ -79,8 +79,8 @@ int main() {
     squares['b'][8].image = t6; // knight
     squares['c'][8].image = t4; // bishop
     squares['d'][8].image = t5; // queen
-    squares['e'][8].image = t3; // king
-    squares['f'][8].image = t1; // bishop
+    squares['e'][8].image = t1; // king
+    squares['f'][8].image = t4; // bishop
     squares['g'][8].image = t6; // knight
     squares['h'][8].image = t3; // rook
     for(char ch = 'a'; ch <= 'h'; ch++) {
@@ -117,8 +117,8 @@ int main() {
     squares['b'][1].image = t6; // knight
     squares['c'][1].image = t4; // bishop
     squares['d'][1].image = t5; // queen
-    squares['e'][1].image = t3; // king
-    squares['f'][1].image = t1; // bishop
+    squares['e'][1].image = t1; // king
+    squares['f'][1].image = t4; // bishop
     squares['g'][1].image = t6; // knight
     squares['h'][1].image = t3; // rook
     for(char ch = 'a'; ch <= 'h'; ch++) {
