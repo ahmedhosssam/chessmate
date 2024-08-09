@@ -130,6 +130,10 @@ int main() {
         squares[ch][2].image = t2;
     }
 
+    Texture2D tmp;
+    char tmpSqr;
+    char tmpNum;
+    int s = 0;
     SetTargetFPS(60); 
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -148,7 +152,16 @@ int main() {
                     int y1 = sq.rec.y;
                     int y2 = sq.rec.y + (sq.rec.width);
                     if (x>=x1 && x<=x2 && y>=y1 && y<=y2) {
-                        squares[ch][i].image = empty;
+                        if (!s) {
+                            tmp = squares[ch][i].image;
+                            tmpSqr = ch;
+                            tmpNum = i;
+                            s=1;
+                        } else {
+                            squares[ch][i].image = tmp;
+                            squares[tmpSqr][tmpNum].image = empty;
+                            s=0;
+                        }
                     }
                 }
             }
