@@ -157,7 +157,7 @@ int main() {
             tmp = empty;
             s=0;
         }
-        if (IsMouseButtonPressed(0) || IsMouseButtonReleased(0)) {
+        if (IsMouseButtonPressed(0)) {
             int x = GetMouseX();
             int y = GetMouseY();
 
@@ -169,9 +169,6 @@ int main() {
                     int y1 = sq.rec.y;
                     int y2 = sq.rec.y + (sq.rec.width);
                     if (x>=x1 && x<=x2 && y>=y1 && y<=y2) {
-                        if (tmpX == x1 && tmpY == y1) {
-                            break;
-                        }
                         if (!s) {
                             tmp = squares[ch][i].image;
                             assignable = squares[ch][i].hasP;
@@ -180,7 +177,7 @@ int main() {
                             tmpNum = i;
                             tmpX = x1;
                             tmpY = y1;
-                            s=1;
+                            s=1; 
                         } else {
                             if (assignable) {
                                 squares[ch][i].assign(tmp);
@@ -189,6 +186,28 @@ int main() {
                             }
                             s=0;
                         }
+                    }
+                }
+            }
+        }
+        if (IsMouseButtonReleased(0)) {
+            int x = GetMouseX();
+            int y = GetMouseY();
+
+            for(char ch = 'a'; ch <= 'h'; ch++) {
+                for(int i = 1; i <= 8; i++) {
+                    Square sq = squares[ch][i];
+                    int x1 = sq.rec.x;
+                    int x2 = sq.rec.x + (sq.rec.width);
+                    int y1 = sq.rec.y;
+                    int y2 = sq.rec.y + (sq.rec.width);
+                    if (x>=x1 && x<=x2 && y>=y1 && y<=y2) {
+                        if (assignable) {
+                            squares[ch][i].assign(tmp);
+                            //squares[tmpSqr][tmpNum].removeTexture();
+                            tmp = empty;
+                        }
+                        s=0;
                     }
                 }
             }
