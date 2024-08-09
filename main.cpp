@@ -18,6 +18,10 @@ class Square {
         rec.height = height;
         color = squareColor;
     }
+
+    void assign(Texture2D newTexture) {
+        image = newTexture;
+    }
 };
 
 int main() {
@@ -131,14 +135,32 @@ int main() {
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
+        if (IsMouseButtonPressed(0)) {
+            int x = GetMouseX();
+            int y = GetMouseY();
+
+            Texture2D empty;
+            for(char ch = 'a'; ch <= 'h'; ch++) {
+                for(int i = 1; i <= 8; i++) {
+                    Square sq = squares[ch][i];
+                    int x1 = sq.rec.x;
+                    int x2 = sq.rec.x + (sq.rec.width);
+                    int y1 = sq.rec.y;
+                    int y2 = sq.rec.y + (sq.rec.width);
+                    if (x>=x1 && x<=x2 && y>=y1 && y<=y2) {
+                        squares[ch][i].image = empty;
+                    }
+                }
+            }
+        }
         for(char ch = 'a'; ch <= 'h'; ch++) {
-            //squares[ch] = vector<Square>;
             for(int i = 1; i <= 8; i++) {
                 Square sq = squares[ch][i];
                 DrawRectangleRec(sq.rec, sq.color);
                 DrawTexture(sq.image, sq.rec.x, sq.rec.y, WHITE);
             }
         }
+
         EndDrawing();
     }
 
