@@ -10,6 +10,7 @@ class Square {
         Rectangle rec;
         Texture2D image;
         Color color;
+        bool hasP = false;
 
     Square(float x, float y, float width, float height, Color squareColor) {
         rec.x = x;
@@ -21,6 +22,13 @@ class Square {
 
     void assign(Texture2D newTexture) {
         image = newTexture;
+        hasP = true;
+    }
+
+    void removeTexture() {
+        Texture2D empty;
+        image = empty;
+        hasP = false;
     }
 };
 
@@ -79,17 +87,17 @@ int main() {
     UnloadImage(b6);
 
     // board setup
-    squares['a'][8].image = t3; // rook
-    squares['b'][8].image = t6; // knight
-    squares['c'][8].image = t4; // bishop
-    squares['d'][8].image = t5; // queen
-    squares['e'][8].image = t1; // king
-    squares['f'][8].image = t4; // bishop
-    squares['g'][8].image = t6; // knight
-    squares['h'][8].image = t3; // rook
+    squares['a'][8].assign(t3); // rook
+    squares['b'][8].assign(t6); // knight
+    squares['c'][8].assign(t4); // bishop
+    squares['d'][8].assign(t5); // queen
+    squares['e'][8].assign(t1); // king
+    squares['f'][8].assign(t4); // bishop
+    squares['g'][8].assign(t6); // knight
+    squares['h'][8].assign(t3); // rook
     for(char ch = 'a'; ch <= 'h'; ch++) {
         // for the pawns
-        squares[ch][7].image = t2;
+        squares[ch][7].assign(t2);
     }
 
     Image w1 = LoadImageSvg("./pieces/white/king.svg", inc, inc);
@@ -117,33 +125,41 @@ int main() {
     UnloadImage(w6);
 
     // board setup
-    squares['a'][1].image = t3; // rook
-    squares['b'][1].image = t6; // knight
-    squares['c'][1].image = t4; // bishop
-    squares['d'][1].image = t5; // queen
-    squares['e'][1].image = t1; // king
-    squares['f'][1].image = t4; // bishop
-    squares['g'][1].image = t6; // knight
-    squares['h'][1].image = t3; // rook
+    squares['a'][1].assign(t3); // rook
+    squares['b'][1].assign(t6); // knight
+    squares['c'][1].assign(t4); // bishop
+    squares['d'][1].assign(t5); // queen
+    squares['e'][1].assign(t1); // king
+    squares['f'][1].assign(t4); // bishop
+    squares['g'][1].assign(t6); // knight
+    squares['h'][1].assign(t3); // rook
     for(char ch = 'a'; ch <= 'h'; ch++) {
         // for the pawns
-        squares[ch][2].image = t2;
+        squares[ch][2].assign(t2);
     }
 
     Texture2D tmp;
     char tmpSqr;
     char tmpNum;
+    int tmpX;
+    int tmpY;
+    bool assignable = false; // if the selected squere doesn't have a piece, it should be skipped
     int s = 0;
     SetTargetFPS(60); 
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
+
+        if (IsMouseButtonPressed(1)) {
+            Texture2D g;
+            tmp = g;
+            s=0;
+        }
         if (IsMouseButtonPressed(0)) {
             int x = GetMouseX();
             int y = GetMouseY();
 
-            Texture2D empty;
             for(char ch = 'a'; ch <= 'h'; ch++) {
                 for(int i = 1; i <= 8; i++) {
                     Square sq = squares[ch][i];
@@ -152,14 +168,22 @@ int main() {
                     int y1 = sq.rec.y;
                     int y2 = sq.rec.y + (sq.rec.width);
                     if (x>=x1 && x<=x2 && y>=y1 && y<=y2) {
+                        if (tmpX == x1 && tmpY == y1) {
+                            break;
+                        }
                         if (!s) {
                             tmp = squares[ch][i].image;
+                            assignable = squares[ch][i].hasP;
                             tmpSqr = ch;
                             tmpNum = i;
+                            tmpX = x1;
+                            tmpY = y1;
                             s=1;
                         } else {
-                            squares[ch][i].image = tmp;
-                            squares[tmpSqr][tmpNum].image = empty;
+                            if (assignable) {
+                                squares[ch][i].assign(tmp);
+                                squares[tmpSqr][tmpNum].removeTexture();
+                            }
                             s=0;
                         }
                     }
