@@ -139,24 +139,25 @@ int main() {
     }
 
     Texture2D tmp;
+    Texture2D empty;
     char tmpSqr;
     char tmpNum;
     int tmpX;
     int tmpY;
     bool assignable = false; // if the selected squere doesn't have a piece, it should be skipped
     int s = 0;
+
     SetTargetFPS(60); 
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-
         if (IsMouseButtonPressed(1)) {
-            Texture2D g;
-            tmp = g;
+            squares[tmpSqr][tmpNum].assign(tmp);
+            tmp = empty;
             s=0;
         }
-        if (IsMouseButtonPressed(0)) {
+        if (IsMouseButtonPressed(0) || IsMouseButtonReleased(0)) {
             int x = GetMouseX();
             int y = GetMouseY();
 
@@ -174,6 +175,7 @@ int main() {
                         if (!s) {
                             tmp = squares[ch][i].image;
                             assignable = squares[ch][i].hasP;
+                            squares[ch][i].removeTexture();
                             tmpSqr = ch;
                             tmpNum = i;
                             tmpX = x1;
@@ -183,6 +185,7 @@ int main() {
                             if (assignable) {
                                 squares[ch][i].assign(tmp);
                                 squares[tmpSqr][tmpNum].removeTexture();
+                                tmp = empty;
                             }
                             s=0;
                         }
@@ -190,6 +193,7 @@ int main() {
                 }
             }
         }
+
         for(char ch = 'a'; ch <= 'h'; ch++) {
             for(int i = 1; i <= 8; i++) {
                 Square sq = squares[ch][i];
@@ -197,6 +201,7 @@ int main() {
                 DrawTexture(sq.image, sq.rec.x, sq.rec.y, WHITE);
             }
         }
+        DrawTexture(tmp, GetMouseX()-50, GetMouseY()-50, WHITE);
 
         EndDrawing();
     }
