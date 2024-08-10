@@ -11,6 +11,7 @@ class Square {
         Texture2D image;
         Color color;
         bool hasP = false;
+        int pieceType; // 0 is Empty, 1 is white, 2 is black
 
     Square(float x, float y, float width, float height, Color squareColor) {
         rec.x = x;
@@ -18,17 +19,20 @@ class Square {
         rec.width = width;
         rec.height = height;
         color = squareColor;
+        pieceType = 0;
     }
 
-    void assign(Texture2D newTexture) {
+    void assign(Texture2D newTexture, int newType) {
         image = newTexture;
         hasP = true;
+        pieceType = newType;
     }
 
     void removeTexture() {
         Texture2D empty;
         image = empty;
         hasP = false;
+        pieceType = 0;
     }
 };
 
@@ -87,17 +91,17 @@ int main() {
     UnloadImage(b6);
 
     // board setup
-    squares['a'][8].assign(t3); // rook
-    squares['b'][8].assign(t6); // knight
-    squares['c'][8].assign(t4); // bishop
-    squares['d'][8].assign(t5); // queen
-    squares['e'][8].assign(t1); // king
-    squares['f'][8].assign(t4); // bishop
-    squares['g'][8].assign(t6); // knight
-    squares['h'][8].assign(t3); // rook
+    squares['a'][8].assign(t3, 2); // rook
+    squares['b'][8].assign(t6, 2); // knight
+    squares['c'][8].assign(t4, 2); // bishop
+    squares['d'][8].assign(t5, 2); // queen
+    squares['e'][8].assign(t1, 2); // king
+    squares['f'][8].assign(t4, 2); // bishop
+    squares['g'][8].assign(t6, 2); // knight
+    squares['h'][8].assign(t3, 2); // rook
     for(char ch = 'a'; ch <= 'h'; ch++) {
         // for the pawns
-        squares[ch][7].assign(t2);
+        squares[ch][7].assign(t2, 2);
     }
 
     Image w1 = LoadImageSvg("./pieces/white/king.svg", inc, inc);
@@ -125,17 +129,17 @@ int main() {
     UnloadImage(w6);
 
     // board setup
-    squares['a'][1].assign(t3); // rook
-    squares['b'][1].assign(t6); // knight
-    squares['c'][1].assign(t4); // bishop
-    squares['d'][1].assign(t5); // queen
-    squares['e'][1].assign(t1); // king
-    squares['f'][1].assign(t4); // bishop
-    squares['g'][1].assign(t6); // knight
-    squares['h'][1].assign(t3); // rook
+    squares['a'][1].assign(t3, 1); // rook
+    squares['b'][1].assign(t6, 1); // knight
+    squares['c'][1].assign(t4, 1); // bishop
+    squares['d'][1].assign(t5, 1); // queen
+    squares['e'][1].assign(t1, 1); // king
+    squares['f'][1].assign(t4, 1); // bishop
+    squares['g'][1].assign(t6, 1); // knight
+    squares['h'][1].assign(t3, 1); // rook
     for(char ch = 'a'; ch <= 'h'; ch++) {
         // for the pawns
-        squares[ch][2].assign(t2);
+        squares[ch][2].assign(t2, 1);
     }
 
     Texture2D tmp;
@@ -144,6 +148,7 @@ int main() {
     char tmpNum;
     int tmpX;
     int tmpY;
+    int tmpPieceType = 0;
     bool assignable = false; // if the selected squere doesn't have a piece, it should be skipped
     int s = 0;
 
@@ -152,11 +157,13 @@ int main() {
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-        if (IsMouseButtonPressed(1)) {
-            squares[tmpSqr][tmpNum].assign(tmp);
-            tmp = empty;
+        if (IsMouseButtonPressed(1)) { // right click
+            squares[tmpSqr][tmpNum].assign(tmp, tmpPieceType);
+            tmpPieceType = 0;
+            //tmp = empty;
             s=0;
         }
+
         if (IsMouseButtonPressed(0)) {
             int x = GetMouseX();
             int y = GetMouseY();
@@ -170,6 +177,7 @@ int main() {
                     int y2 = sq.rec.y + (sq.rec.width);
                     if (x>=x1 && x<=x2 && y>=y1 && y<=y2) {
                         if (!s) {
+                            tmpPieceType = squares[ch][i].pieceType;
                             tmp = squares[ch][i].image;
                             assignable = squares[ch][i].hasP;
                             squares[ch][i].removeTexture();
@@ -180,7 +188,7 @@ int main() {
                             s=1; 
                         } else {
                             if (assignable) {
-                                squares[ch][i].assign(tmp);
+                                squares[ch][i].assign(tmp, tmpPieceType);
                                 squares[tmpSqr][tmpNum].removeTexture();
                                 tmp = empty;
                             }
@@ -190,6 +198,7 @@ int main() {
                 }
             }
         }
+
         if (IsMouseButtonReleased(0)) {
             int x = GetMouseX();
             int y = GetMouseY();
@@ -202,15 +211,21 @@ int main() {
                     int y1 = sq.rec.y;
                     int y2 = sq.rec.y + (sq.rec.width);
                     if (x>=x1 && x<=x2 && y>=y1 && y<=y2) {
-                        if (assignable) {
-                            squares[ch][i].assign(tmp);
+                        if (assignable && squares[ch][i].pieceType != tmpPieceType) {
+                            squares[ch][i].assign(tmp, tmpPieceType);
                             //squares[tmpSqr][tmpNum].removeTexture();
-                            tmp = empty;
+                        } else {
+                            squares[tmpSqr][tmpNum].assign(tmp, tmpPieceType);
                         }
+                        tmp = empty;
                         s=0;
                     }
                 }
             }
+        }
+
+        if (IsMouseButtonReleased(1)) {
+            // TODO: The right click release now is kinda ugly, this needs to be implemented.
         }
 
         for(char ch = 'a'; ch <= 'h'; ch++) {
