@@ -5,6 +5,7 @@
 #include "raylib.h"
 
 #include "square.h"
+#include "board.h"
 
 using namespace std;
 
@@ -12,117 +13,10 @@ int main() {
     const int screenWidth = 1000;
     const int screenHeight = 1000;
     const int squareWidth = screenWidth/8;
-    int inc = screenWidth/8;
-
-    // Build the board
-    map<char, vector<Square>> squares;
-    int j = 7;
-    bool f = false;
-    for(char ch = 'h'; ch >= 'a'; ch--) {
-        Square sq(0, 0, 0, 0, WHITE);
-        squares[ch].push_back(sq); // push dummy object to make the array 1-based index
-        
-        Color color = DARKPURPLE;
-        for(int i = 7; i >= 0; i--) {
-            if ((f && i%2==0) || (!f && i%2==1)) {
-                color = RAYWHITE;
-            } else {
-                color = DARKPURPLE;
-            }
-            Square square(j*inc, i*inc, squareWidth, squareWidth, color);
-            squares[ch].push_back(square);
-        }
-        f = !f;
-        j--;
-    }
-
 
     InitWindow(screenWidth, screenHeight, "Chessmate");
 
-    Image b1 = LoadImageSvg("./pieces/black/king.svg", inc, inc);
-    Texture2D t1 = LoadTextureFromImage(b1); 
-
-    Image b2 = LoadImageSvg("./pieces/black/pawn.svg", inc, inc);
-    Texture2D t2 = LoadTextureFromImage(b2);
-
-    Image b3 = LoadImageSvg("./pieces/black/rook.svg", inc, inc);
-    Texture2D t3 = LoadTextureFromImage(b3);
-
-    Image b4 = LoadImageSvg("./pieces/black/bishop.svg", inc, inc);
-    Texture2D t4 = LoadTextureFromImage(b4); 
-
-    Image b5 = LoadImageSvg("./pieces/black/queen.svg", inc, inc);
-    Texture2D t5 = LoadTextureFromImage(b5); 
-
-    Image b6 = LoadImageSvg("./pieces/black/knight.svg", inc, inc);
-    Texture2D t6 = LoadTextureFromImage(b6); 
-    UnloadImage(b1);
-    UnloadImage(b2);
-    UnloadImage(b3);
-    UnloadImage(b4);
-    UnloadImage(b5);
-    UnloadImage(b6);
-
-    // board setup
-    squares['a'][8].assign(t3, 2); // rook
-    squares['b'][8].assign(t6, 2); // knight
-    squares['c'][8].assign(t4, 2); // bishop
-    squares['d'][8].assign(t5, 2); // queen
-    squares['e'][8].assign(t1, 2); // king
-    squares['f'][8].assign(t4, 2); // bishop
-    squares['g'][8].assign(t6, 2); // knight
-    squares['h'][8].assign(t3, 2); // rook
-    for(char ch = 'a'; ch <= 'h'; ch++) {
-        // for the pawns
-        squares[ch][7].assign(t2, 2);
-    }
-
-    Image w1 = LoadImageSvg("./pieces/white/king.svg", inc, inc);
-    t1 = LoadTextureFromImage(w1); 
-
-    Image w2 = LoadImageSvg("./pieces/white/pawn.svg", inc, inc);
-    t2 = LoadTextureFromImage(w2);
-
-    Image w3 = LoadImageSvg("./pieces/white/rook.svg", inc, inc);
-    t3 = LoadTextureFromImage(w3); 
-
-    Image w4 = LoadImageSvg("./pieces/white/bishop.svg", inc, inc);
-    t4 = LoadTextureFromImage(w4);
-
-    Image w5 = LoadImageSvg("./pieces/white/queen.svg", inc, inc);
-    t5 = LoadTextureFromImage(w5); 
-
-    Image w6 = LoadImageSvg("./pieces/white/knight.svg", inc, inc);
-    t6 = LoadTextureFromImage(w6); 
-    UnloadImage(w1);
-    UnloadImage(w2);
-    UnloadImage(w3);
-    UnloadImage(w4);
-    UnloadImage(w5);
-    UnloadImage(w6);
-
-    // board setup
-    squares['a'][1].assign(t3, 1); // rook
-    squares['b'][1].assign(t6, 1); // knight
-    squares['c'][1].assign(t4, 1); // bishop
-    squares['d'][1].assign(t5, 1); // queen
-    squares['e'][1].assign(t1, 1); // king
-    squares['f'][1].assign(t4, 1); // bishop
-    squares['g'][1].assign(t6, 1); // knight
-    squares['h'][1].assign(t3, 1); // rook
-    for(char ch = 'a'; ch <= 'h'; ch++) {
-        // for the pawns
-        squares[ch][2].assign(t2, 1);
-    }
-
-    Texture2D tmp;
-    Texture2D empty;
-    char tmpSqr;
-    char tmpNum;
-    int tmpX;
-    int tmpY;
-    int tmpPieceType = 0;
-    bool assignable = false; // if the selected squere doesn't have a piece, it should be skipped
+    Board board;
     int s = 0;
 
     SetTargetFPS(60); 
@@ -131,8 +25,11 @@ int main() {
         ClearBackground(RAYWHITE);
 
         if (IsMouseButtonPressed(1)) { // right click
-            squares[tmpSqr][tmpNum].assign(tmp, tmpPieceType);
-            tmpPieceType = 0;
+            int tmpSqr = board.tmpSqr;
+            int tmpNum = board.tmpNum;
+
+            board[tmpSqr][tmpNum].assign(board.tmp, board.tmpPieceType);
+            board.tmpPieceType = 0;
             //tmp = empty;
             s=0;
         }
@@ -143,27 +40,30 @@ int main() {
 
             for(char ch = 'a'; ch <= 'h'; ch++) {
                 for(int i = 1; i <= 8; i++) {
-                    Square sq = squares[ch][i];
+                    Square sq = board[ch][i];
                     int x1 = sq.rec.x;
                     int x2 = sq.rec.x + (sq.rec.width);
                     int y1 = sq.rec.y;
                     int y2 = sq.rec.y + (sq.rec.width);
                     if (x>=x1 && x<=x2 && y>=y1 && y<=y2) {
                         if (!s) {
-                            tmpPieceType = squares[ch][i].pieceType;
-                            tmp = squares[ch][i].image;
-                            assignable = squares[ch][i].hasP;
-                            squares[ch][i].removeTexture();
-                            tmpSqr = ch;
-                            tmpNum = i;
-                            tmpX = x1;
-                            tmpY = y1;
+                            board.tmpPieceType = board[ch][i].pieceType;
+                            board.tmp = board[ch][i].image;
+                            board.assignable = board[ch][i].hasP;
+                            board[ch][i].removeTexture();
+                            board.tmpSqr = ch;
+                            board.tmpNum = i;
+                            board.tmpX = x1;
+                            board.tmpY = y1;
                             s=1; 
                         } else {
-                            if (assignable) {
-                                squares[ch][i].assign(tmp, tmpPieceType);
-                                squares[tmpSqr][tmpNum].removeTexture();
-                                tmp = empty;
+                            if (board.assignable) {
+                                int tmpSqr = tmpSqr;
+                                int tmpNum = tmpNum;
+
+                                board[ch][i].assign(board.tmp, board.tmpPieceType);
+                                board[tmpSqr][tmpNum].removeTexture();
+                                board.tmp = board.empty;
                             }
                             s=0;
                         }
@@ -178,19 +78,22 @@ int main() {
 
             for(char ch = 'a'; ch <= 'h'; ch++) {
                 for(int i = 1; i <= 8; i++) {
-                    Square sq = squares[ch][i];
+                    Square sq = board[ch][i];
                     int x1 = sq.rec.x;
                     int x2 = sq.rec.x + (sq.rec.width);
                     int y1 = sq.rec.y;
                     int y2 = sq.rec.y + (sq.rec.width);
                     if (x>=x1 && x<=x2 && y>=y1 && y<=y2) {
-                        if (assignable && squares[ch][i].pieceType != tmpPieceType) {
-                            squares[ch][i].assign(tmp, tmpPieceType);
-                            //squares[tmpSqr][tmpNum].removeTexture();
+                        if (board.assignable && board[ch][i].pieceType != board.tmpPieceType) {
+                            board[ch][i].assign(board.tmp, board.tmpPieceType);
+                            //board[tmpSqr][tmpNum].removeTexture();
                         } else {
-                            squares[tmpSqr][tmpNum].assign(tmp, tmpPieceType);
+                            int tmpSqr = board.tmpSqr;
+                            int tmpNum = board.tmpNum;
+
+                            board[tmpSqr][tmpNum].assign(board.tmp, board.tmpPieceType);
                         }
-                        tmp = empty;
+                        board.tmp = board.empty;
                         s=0;
                     }
                 }
@@ -203,22 +106,17 @@ int main() {
 
         for(char ch = 'a'; ch <= 'h'; ch++) {
             for(int i = 1; i <= 8; i++) {
-                Square sq = squares[ch][i];
+                Square sq = board[ch][i];
                 DrawRectangleRec(sq.rec, sq.color);
                 DrawTexture(sq.image, sq.rec.x, sq.rec.y, WHITE);
             }
         }
-        DrawTexture(tmp, GetMouseX()-50, GetMouseY()-50, WHITE);
+
+        DrawTexture(board.tmp, GetMouseX()-50, GetMouseY()-50, WHITE);
 
         EndDrawing();
     }
 
-    UnloadTexture(t1);
-    UnloadTexture(t2);
-    UnloadTexture(t3);
-    UnloadTexture(t4);
-    UnloadTexture(t5);
-    UnloadTexture(t6);
     CloseWindow(); 
 
     return 0;

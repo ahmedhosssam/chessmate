@@ -4,7 +4,7 @@
 #include "raylib.h"
 
 class Square {
-    public:
+public:
     Rectangle rec;
     Texture2D image;
     Color color;
