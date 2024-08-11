@@ -18,6 +18,8 @@ int main() {
 
     Board board;
     int s = 0;
+    int turn = 1; // 1 is white, 2 is black
+    int tmpPieceType = 1;
 
     SetTargetFPS(60); 
     while (!WindowShouldClose()) {
@@ -41,7 +43,8 @@ int main() {
             s=0;
         }
 
-        if (IsMouseButtonPressed(0)) {
+        if (IsMouseButtonPressed(0)) { // left click
+            tmpPieceType = square->pieceType;
             if (!s) {
                 board.tmpPieceType = square->pieceType;
                 board.tmp = square->image;
@@ -66,8 +69,9 @@ int main() {
         }
 
         if (IsMouseButtonReleased(0)) {
-            if (board.assignable && square->pieceType != board.tmpPieceType) {
+            if (board.assignable && square->pieceType != board.tmpPieceType && tmpPieceType==turn && (board.tmpSqr != square->file || board.tmpNum != square->rank)) {
                 square->assign(board.tmp, board.tmpPieceType);
+                turn = turn==1 ? 2 : 1;
                 //board[tmpSqr][tmpNum].removeTexture();
             } else {
                 int tmpSqr = board.tmpSqr;

@@ -22,6 +22,8 @@ Board::Board() {
         squares[ch].push_back(sq); // push dummy object to make the array 1-based index
         
         Color color = DARKPURPLE;
+        int rank = 1;
+
         for(int i = 7; i >= 0; i--) {
             if ((f && i%2==0) || (!f && i%2==1)) {
                 color = RAYWHITE;
@@ -30,7 +32,8 @@ Board::Board() {
             }
             Square square(j*inc, i*inc, squareWidth, squareWidth, color);
             square.file = ch;
-            square.rank = i+1;
+            square.rank = rank;
+            rank++;
             squares[ch].push_back(square);
         }
         f = !f;
