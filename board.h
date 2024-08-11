@@ -28,6 +28,8 @@ public:
     
     Board();
     vector<Square>& operator[](int index);
+    Square* getCurrentSquare(int x, int y);
+
     ~Board();
 };
 

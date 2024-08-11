@@ -2,6 +2,6 @@
 
 g++ main.cpp square.cpp board.cpp -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 
-if [ $?==0 ]; then
+if [ $? -eq 0 ]; then
     ./a.out
 fi

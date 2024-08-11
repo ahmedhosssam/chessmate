@@ -5,7 +5,7 @@
 
 class Square {
 public:
-    Rectangle rec;
+    Rectangle rec; // The raylib rectangle object of the square
     Texture2D image;
     Color color;
     bool hasP = false;
