@@ -133,7 +133,6 @@ vector<Square>& Board::operator[](int index) {
 Square* Board::getCurrentSquare(int x, int y) {
     Square* square = &squares['g'][5];
     for(char ch = 'a'; ch <= 'h'; ch++) {
-        bool done = false;
         for(int i = 1; i <= 8; i++) {
             Square &sq = squares[ch][i];
             int x1 = sq.rec.x;
@@ -142,12 +141,8 @@ Square* Board::getCurrentSquare(int x, int y) {
             int y2 = sq.rec.y + sq.rec.width;
             if (x>=x1 && x<=x2 && y>=y1 && y<=y2) {
                 square = &sq;
-                done = true;
                 break;
             }
-        }
-        if (done) {
-            break;
         }
     }
     return square;
