@@ -23,8 +23,9 @@ int main() {
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(RAYWHITE);
+        Square* square = board.getCurrentSquare(GetMouseX(), GetMouseY());
 
-        if (board.getCurrentSquare(GetMouseX(), GetMouseY())->hasP) {
+        if (square->hasP) {
             SetMouseCursor(4);
         } else {
             SetMouseCursor(0);
@@ -41,69 +42,41 @@ int main() {
         }
 
         if (IsMouseButtonPressed(0)) {
-            int x = GetMouseX();
-            int y = GetMouseY();
+            if (!s) {
+                board.tmpPieceType = square->pieceType;
+                board.tmp = square->image;
+                board.assignable = square->hasP;
+                square->removeTexture();
+                board.tmpSqr = square->file;
+                board.tmpNum = square->rank;
+                board.tmpX = square->rec.x;
+                board.tmpY = square->rec.y;
+                s=1;
+            } else {
+                if (board.assignable) {
+                    int tmpSqr = tmpSqr;
+                    int tmpNum = tmpNum;
 
-            for(char ch = 'a'; ch <= 'h'; ch++) {
-                for(int i = 1; i <= 8; i++) {
-                    Square sq = board[ch][i];
-                    int x1 = sq.rec.x;
-                    int x2 = sq.rec.x + (sq.rec.width);
-                    int y1 = sq.rec.y;
-                    int y2 = sq.rec.y + (sq.rec.width);
-                    if (x>=x1 && x<=x2 && y>=y1 && y<=y2) {
-                        if (!s) {
-                            board.tmpPieceType = board[ch][i].pieceType;
-                            board.tmp = board[ch][i].image;
-                            board.assignable = board[ch][i].hasP;
-                            board[ch][i].removeTexture();
-                            board.tmpSqr = ch;
-                            board.tmpNum = i;
-                            board.tmpX = x1;
-                            board.tmpY = y1;
-                            s=1; 
-                        } else {
-                            if (board.assignable) {
-                                int tmpSqr = tmpSqr;
-                                int tmpNum = tmpNum;
-
-                                board[ch][i].assign(board.tmp, board.tmpPieceType);
-                                board[tmpSqr][tmpNum].removeTexture();
-                                board.tmp = board.empty;
-                            }
-                            s=0;
-                        }
-                    }
+                    square->assign(board.tmp, board.tmpPieceType);
+                    board[tmpSqr][tmpNum].removeTexture();
+                    board.tmp = board.empty;
                 }
+                s=0;
             }
         }
 
         if (IsMouseButtonReleased(0)) {
-            int x = GetMouseX();
-            int y = GetMouseY();
+            if (board.assignable && square->pieceType != board.tmpPieceType) {
+                square->assign(board.tmp, board.tmpPieceType);
+                //board[tmpSqr][tmpNum].removeTexture();
+            } else {
+                int tmpSqr = board.tmpSqr;
+                int tmpNum = board.tmpNum;
 
-            for(char ch = 'a'; ch <= 'h'; ch++) {
-                for(int i = 1; i <= 8; i++) {
-                    Square sq = board[ch][i];
-                    int x1 = sq.rec.x;
-                    int x2 = sq.rec.x + (sq.rec.width);
-                    int y1 = sq.rec.y;
-                    int y2 = sq.rec.y + (sq.rec.width);
-                    if (x>=x1 && x<=x2 && y>=y1 && y<=y2) {
-                        if (board.assignable && board[ch][i].pieceType != board.tmpPieceType) {
-                            board[ch][i].assign(board.tmp, board.tmpPieceType);
-                            //board[tmpSqr][tmpNum].removeTexture();
-                        } else {
-                            int tmpSqr = board.tmpSqr;
-                            int tmpNum = board.tmpNum;
-
-                            board[tmpSqr][tmpNum].assign(board.tmp, board.tmpPieceType);
-                        }
-                        board.tmp = board.empty;
-                        s=0;
-                    }
-                }
+                board[tmpSqr][tmpNum].assign(board.tmp, board.tmpPieceType);
             }
+            board.tmp = board.empty;
+            s=0;
         }
 
         if (IsMouseButtonReleased(1)) {

@@ -29,6 +29,8 @@ Board::Board() {
                 color = DARKPURPLE;
             }
             Square square(j*inc, i*inc, squareWidth, squareWidth, color);
+            square.file = ch;
+            square.rank = i+1;
             squares[ch].push_back(square);
         }
         f = !f;
