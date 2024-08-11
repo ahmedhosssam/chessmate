@@ -24,6 +24,12 @@ int main() {
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
+        if (board.getCurrentSquare(GetMouseX(), GetMouseY())->hasP) {
+            SetMouseCursor(4);
+        } else {
+            SetMouseCursor(0);
+        }
+
         if (IsMouseButtonPressed(1)) { // right click
             int tmpSqr = board.tmpSqr;
             int tmpNum = board.tmpNum;
