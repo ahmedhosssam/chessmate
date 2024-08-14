@@ -25,6 +25,7 @@ public:
     Texture2D image;
     Color color;
     bool hasP = false;
+    bool hasStarted = false; // this is mainly for pawns, to add an additional square if it has not moved
     int pieceColor; // 0 is Empty, 1 is white, 2 is black
     int pieceType; // Bishop, queen, or rook, etc
     char file;
@@ -33,6 +34,7 @@ public:
     Square(float x, float y, float width, float height, Color squareColor);
     void assign(Texture2D newTexture, int newColor, int newPiece);
     void removeTexture();
+    Square& operator=(const Square& other);
 };
 
 #endif
