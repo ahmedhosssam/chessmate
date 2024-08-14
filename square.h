@@ -32,6 +32,8 @@ public:
     int rank;
 
     Square(float x, float y, float width, float height, Color squareColor);
+    void assign(Square square);
+    void assignForTmp(Square square);
     void assign(Texture2D newTexture, int newColor, int newPiece);
     void removeTexture();
     Square& operator=(const Square& other);

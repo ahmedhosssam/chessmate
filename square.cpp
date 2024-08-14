@@ -12,12 +12,34 @@ Square::Square(float x, float y, float width, float height, Color squareColor) {
     pieceColor = 0;
 }
 
+Square& Square::operator=(const Square& other) {
+    this->image = other.image;
+    this->hasP = other.hasP;
+    this->hasStarted = other.hasStarted;
+    this->pieceColor = other.pieceColor;
+    this->pieceType = other.pieceType;
+
+    return *this;
+}
+
+void Square::assign(Square square) {
+    *this = square;
+    hasStarted = true;
+}
+
 void Square::assign(Texture2D newTexture, int newColor, int newPiece) {
     image = newTexture;
     hasP = true;
     hasStarted = true;
     pieceColor = newColor;
     pieceType = newPiece;
+}
+
+void Square::assignForTmp(Square square) {
+    *this = square;
+    this->file = square.file;
+    this->rank = square.rank;
+    hasStarted = true;
 }
 
 void Square::removeTexture() {
@@ -28,16 +50,3 @@ void Square::removeTexture() {
     pieceColor = 0;
 }
 
-Square& Square::operator=(const Square& other) {
-    this->rec = other.rec;
-    this->image = other.image;
-    this->color = other.color;
-    this->hasP = other.hasP;
-    this->hasStarted = other.hasStarted;
-    this->pieceColor = other.pieceColor;
-    this->pieceType = other.pieceType;
-    this->file = other.file;
-    this->rank = other.rank;
-
-    return *this;
-}
