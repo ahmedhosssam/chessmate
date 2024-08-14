@@ -72,17 +72,25 @@ Board::Board() {
     UnloadImage(b6);
 
     // board setup
-    squares['a'][8].assign(blackPieces["rook"], 2); 
-    squares['b'][8].assign(blackPieces["knight"], 2);
-    squares['c'][8].assign(blackPieces["bishop"], 2); 
-    squares['d'][8].assign(blackPieces["queen"], 2); 
-    squares['e'][8].assign(blackPieces["king"], 2); 
-    squares['f'][8].assign(blackPieces["bishop"], 2); 
-    squares['g'][8].assign(blackPieces["knight"], 2); 
-    squares['h'][8].assign(blackPieces["rook"], 2); 
+    /*
+     1 pawn
+     2 knight
+     3 bishop
+     4 rook
+     5 queen
+     6 king
+    */
+    squares['a'][8].assign(blackPieces["rook"], 2, 4); 
+    squares['b'][8].assign(blackPieces["knight"], 2, 2);
+    squares['c'][8].assign(blackPieces["bishop"], 2, 3); 
+    squares['d'][8].assign(blackPieces["queen"], 2, 5); 
+    squares['e'][8].assign(blackPieces["king"], 2, 6); 
+    squares['f'][8].assign(blackPieces["bishop"], 2, 3); 
+    squares['g'][8].assign(blackPieces["knight"], 2, 2); 
+    squares['h'][8].assign(blackPieces["rook"], 2, 4);
     for(char ch = 'a'; ch <= 'h'; ch++) {
         // for the pawns
-        squares[ch][7].assign(blackPieces["pawn"], 2);
+        squares[ch][7].assign(blackPieces["pawn"], 2, 1);
     }
 
     Image w1 = LoadImageSvg("./pieces/white/king.svg", inc, inc);
@@ -117,17 +125,17 @@ Board::Board() {
     UnloadImage(w6);
 
     // board setup
-    squares['a'][1].assign(whitePieces["rook"], 1); 
-    squares['b'][1].assign(whitePieces["knight"], 1); 
-    squares['c'][1].assign(whitePieces["bishop"], 1); 
-    squares['d'][1].assign(whitePieces["queen"], 1); 
-    squares['e'][1].assign(whitePieces["king"], 1); 
-    squares['f'][1].assign(whitePieces["bishop"], 1); 
-    squares['g'][1].assign(whitePieces["knight"], 1); 
-    squares['h'][1].assign(whitePieces["rook"], 1); 
+    squares['a'][1].assign(whitePieces["rook"], 1, 4);
+    squares['b'][1].assign(whitePieces["knight"], 1, 2);
+    squares['c'][1].assign(whitePieces["bishop"], 1, 3);
+    squares['d'][1].assign(whitePieces["queen"], 1, 5);
+    squares['e'][1].assign(whitePieces["king"], 1, 6);
+    squares['f'][1].assign(whitePieces["bishop"], 1, 3);
+    squares['g'][1].assign(whitePieces["knight"], 1, 2);
+    squares['h'][1].assign(whitePieces["rook"], 1, 4);
     for(char ch = 'a'; ch <= 'h'; ch++) {
         // for the pawns
-        squares[ch][2].assign(whitePieces["pawn"], 1);
+        squares[ch][2].assign(whitePieces["pawn"], 1, 1);
     }
 }
 

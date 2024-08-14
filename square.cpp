@@ -11,10 +11,11 @@ Square::Square(float x, float y, float width, float height, Color squareColor) {
     pieceType = 0;
 }
 
-void Square::assign(Texture2D newTexture, int newType) {
+void Square::assign(Texture2D newTexture, int newColor, int newPiece) {
     image = newTexture;
     hasP = true;
-    pieceType = newType;
+    pieceColor = newColor;
+    pieceType = newPiece;
 }
 
 void Square::removeTexture() {
