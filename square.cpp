@@ -23,4 +23,5 @@ void Square::removeTexture() {
     image = empty;
     hasP = false;
     pieceType = 0;
+    pieceColor = 0;
 }

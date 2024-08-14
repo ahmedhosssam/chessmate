@@ -17,9 +17,16 @@ int main() {
     InitWindow(screenWidth, screenHeight, "Chessmate");
 
     Board board;
+    Texture2D tmp;
+    Texture2D empty;
     int s = 0;
     int turn = 1; // 1 is white, 2 is black
-    int tmpPieceColor = 1;
+    char tmpSqr = 0;
+    char tmpNum = 0;
+    int tmpX = 0;
+    int tmpY = 0;
+    int tmpPieceColor = 0;
+    int tmpPieceType = 0;
 
     SetTargetFPS(60); 
     while (!WindowShouldClose()) {
@@ -34,52 +41,48 @@ int main() {
         }
 
         if (IsMouseButtonPressed(1)) { // right click
-            int tmpSqr = board.tmpSqr;
-            int tmpNum = board.tmpNum;
-
-            board[tmpSqr][tmpNum].assign(board.tmp, board.tmpPieceColor, board.tmpPieceType);
-            board.tmpPieceColor = 0;
+            board[tmpSqr][tmpNum].assign(tmp, tmpPieceColor, tmpPieceType);
+            tmpPieceColor = 0;
+            tmpPieceType = 0;
             //tmp = empty;
             s=0;
         }
 
         if (IsMouseButtonPressed(0)) { // left click
-            tmpPieceColor = square->pieceColor;
             if (!s) {
-                board.tmpPieceColor = square->pieceColor;
-                board.tmp = square->image;
+                tmpPieceType = square->pieceType;
+                tmpPieceColor = square->pieceColor;
+                tmp = square->image;
                 board.assignable = square->hasP;
                 square->removeTexture();
-                board.tmpSqr = square->file;
-                board.tmpNum = square->rank;
-                board.tmpX = square->rec.x;
-                board.tmpY = square->rec.y;
+                tmpSqr = square->file;
+                tmpNum = square->rank;
+                tmpX = square->rec.x;
+                tmpY = square->rec.y;
                 s=1;
             } else {
                 if (board.assignable) {
                     int tmpSqr = tmpSqr;
                     int tmpNum = tmpNum;
 
-                    square->assign(board.tmp, board.tmpPieceColor, board.tmpPieceType);
+                    square->assign(tmp, tmpPieceColor, tmpPieceType);
                     board[tmpSqr][tmpNum].removeTexture();
-                    board.tmp = board.empty;
+                    tmpPieceType = 0;
+                    tmpPieceColor = 0;
+                    tmp = empty;
                 }
                 s=0;
             }
         }
 
         if (IsMouseButtonReleased(0)) {
-            if (board.assignable && square->pieceColor != board.tmpPieceType && tmpPieceColor==turn && (board.tmpSqr != square->file || board.tmpNum != square->rank)) {
-                square->assign(board.tmp, board.tmpPieceColor, board.tmpPieceType);
+            if (board.assignable && square->pieceColor != tmpPieceColor && tmpPieceColor==turn && (tmpSqr != square->file || tmpNum != square->rank)) {
+                square->assign(tmp, tmpPieceColor, tmpPieceType);
                 turn = turn==1 ? 2 : 1;
-                //board[tmpSqr][tmpNum].removeTexture();
             } else {
-                int tmpSqr = board.tmpSqr;
-                int tmpNum = board.tmpNum;
-
-                board[tmpSqr][tmpNum].assign(board.tmp, board.tmpPieceColor, board.tmpPieceType);
+                board[tmpSqr][tmpNum].assign(tmp, tmpPieceColor, tmpPieceType);
             }
-            board.tmp = board.empty;
+            tmp = empty;
             s=0;
         }
 
@@ -95,7 +98,7 @@ int main() {
             }
         }
 
-        DrawTexture(board.tmp, GetMouseX()-50, GetMouseY()-50, WHITE);
+        DrawTexture(tmp, GetMouseX()-50, GetMouseY()-50, WHITE);
 
         EndDrawing();
     }

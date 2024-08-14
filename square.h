@@ -3,6 +3,22 @@
 
 #include "raylib.h"
 
+/*
+ For `pieceType`:
+     0 empty
+     1 pawn
+     2 knight
+     3 bishop
+     4 rook
+     5 queen
+     6 king
+
+ For `pieceColor`:
+     0 Empty
+     1 White
+     2 Black
+*/
+
 class Square {
 public:
     Rectangle rec; // The raylib rectangle object of the square

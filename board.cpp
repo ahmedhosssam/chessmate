@@ -72,14 +72,6 @@ Board::Board() {
     UnloadImage(b6);
 
     // board setup
-    /*
-     1 pawn
-     2 knight
-     3 bishop
-     4 rook
-     5 queen
-     6 king
-    */
     squares['a'][8].assign(blackPieces["rook"], 2, 4); 
     squares['b'][8].assign(blackPieces["knight"], 2, 2);
     squares['c'][8].assign(blackPieces["bishop"], 2, 3); 

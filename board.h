@@ -19,12 +19,6 @@ public:
 
     Texture2D tmp;
     Texture2D empty;
-    char tmpSqr;
-    char tmpNum;
-    int tmpX;
-    int tmpY;
-    int tmpPieceColor = 0;
-    int tmpPieceType = 0;
     bool assignable = false; // if the selected squere doesn't have a piece, it should be skipped
     
     Board();
