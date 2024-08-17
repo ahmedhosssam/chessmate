@@ -47,6 +47,7 @@ int main() {
             if (!s) {
                 tmpSquare.assignForTmp(*square);
                 square->removeTexture();
+                square->assign(emptySquare);
                 s=1;
             } else {
                 if (board.assignable) {
@@ -61,6 +62,7 @@ int main() {
         if (IsMouseButtonReleased(0)) {
             if (square->pieceColor != tmpSquare.pieceColor && tmpSquare.pieceColor==turn && (tmpSquare.file != square->file || tmpSquare.rank != square->rank)) {
                 square->assign(tmpSquare);
+                board[tmpSquare.file][tmpSquare.rank].assign(emptySquare);
                 turn = turn==1 ? 2 : 1;
             } else {
                 board[tmpSquare.file][tmpSquare.rank].assign(tmpSquare);
