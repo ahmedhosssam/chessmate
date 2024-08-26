@@ -4,8 +4,8 @@
 
 #include "raylib.h"
 
-#include "square.h"
-#include "board.h"
+#include "include/square.h"
+#include "include/board.h"
 
 using namespace std;
 
@@ -64,6 +64,13 @@ int main() {
                 square->assign(tmpSquare);
                 board[tmpSquare.file][tmpSquare.rank].assign(emptySquare);
                 turn = turn==1 ? 2 : 1;
+
+                if (square->pieceType == 1 && square->pieceColor == 1) {
+                    cout << (char)(square->file+1) << square->rank+1 << endl;
+                    cout << square->file << square->rank+1 << endl;
+                    cout << (char)(square->file-1) << square->rank+1 << endl;
+                }
+
             } else {
                 board[tmpSquare.file][tmpSquare.rank].assign(tmpSquare);
             }

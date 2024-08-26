@@ -1,7 +1,9 @@
 #ifndef SQUARE_H
 #define SQUARE_H
 
+#include <vector>
 #include "raylib.h"
+using namespace std;
 
 /*
  For `pieceType`:
@@ -24,12 +26,14 @@ public:
     Rectangle rec; // The raylib rectangle object of the square
     Texture2D image;
     Color color;
+    vector<pair<char, int>> legalSquares;
+    char file;
+    int rank;
     bool hasP = false;
+
     bool hasStarted = false; // this is mainly for pawns, to add an additional square if it has not moved
     int pieceColor; // 0 is Empty, 1 is white, 2 is black
     int pieceType; // Bishop, queen, or rook, etc
-    char file;
-    int rank;
 
     Square(float x, float y, float width, float height, Color squareColor);
     void assign(Square square);

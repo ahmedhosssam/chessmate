@@ -6,8 +6,8 @@ using namespace std;
 
 #include "raylib.h"
 
-#include "board.h"
-#include "square.h"
+#include "../include/board.h"
+#include "../include/square.h"
 
 Board::Board() {
     const int screenWidth = 1000;

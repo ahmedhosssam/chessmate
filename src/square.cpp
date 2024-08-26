@@ -1,6 +1,6 @@
 #include "raylib.h"
 
-#include "square.h"
+#include "../include/square.h"
 
 Square::Square(float x, float y, float width, float height, Color squareColor) {
     rec.x = x;
