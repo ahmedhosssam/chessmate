@@ -7,7 +7,6 @@ using namespace std;
 #include "raylib.h"
 
 #include "../include/board.h"
-#include "../include/square.h"
 
 Board::Board() {
     const int screenWidth = 1000;
@@ -82,7 +81,18 @@ Board::Board() {
     squares['h'][8].assign(blackPieces["rook"], 2, 4);
     for(char ch = 'a'; ch <= 'h'; ch++) {
         // for the pawns
-        squares[ch][7].assign(blackPieces["pawn"], 2, 1);
+        vector<pair<char, int>> legalSquares;
+        legalSquares.push_back({char(ch), 6});
+        legalSquares.push_back({char(ch), 5});
+        if (ch=='a') {
+            legalSquares.push_back({'b', 6});
+        } else if (ch=='h') {
+            legalSquares.push_back({'g', 6});
+        } else {
+            legalSquares.push_back({char(ch-1), 6});
+            legalSquares.push_back({char(ch+1), 6});
+        }
+        squares[ch][7].assign(blackPieces["pawn"], 2, 1, legalSquares);
     }
 
     Image w1 = LoadImageSvg("./pieces/white/king.svg", inc, inc);
@@ -127,7 +137,18 @@ Board::Board() {
     squares['h'][1].assign(whitePieces["rook"], 1, 4);
     for(char ch = 'a'; ch <= 'h'; ch++) {
         // for the pawns
-        squares[ch][2].assign(whitePieces["pawn"], 1, 1);
+        vector<pair<char, int>> legalSquares;
+        legalSquares.push_back({char(ch), 3});
+        legalSquares.push_back({char(ch), 4});
+        if (ch=='a') {
+            legalSquares.push_back({'b', 3});
+        } else if (ch=='h') {
+            legalSquares.push_back({'g', 3});
+        } else {
+            legalSquares.push_back({char(ch-1), 3});
+            legalSquares.push_back({char(ch+1), 3});
+        }
+        squares[ch][2].assign(whitePieces["pawn"], 1, 1, legalSquares);
     }
 }
 

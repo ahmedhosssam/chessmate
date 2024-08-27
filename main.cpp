@@ -1,10 +1,10 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
 #include <map>
 
 #include "raylib.h"
 
-#include "include/square.h"
 #include "include/board.h"
 
 using namespace std;
@@ -46,6 +46,7 @@ int main() {
         if (IsMouseButtonPressed(0)) { // left click
             if (!s) {
                 tmpSquare.assignForTmp(*square);
+                tmpSquare.updateLegalSquares(board);
                 square->removeTexture();
                 square->assign(emptySquare);
                 s=1;
@@ -60,16 +61,18 @@ int main() {
         }
 
         if (IsMouseButtonReleased(0)) {
-            if (square->pieceColor != tmpSquare.pieceColor && tmpSquare.pieceColor==turn && (tmpSquare.file != square->file || tmpSquare.rank != square->rank)) {
+            pair<char, int> key = {square->file, square->rank};
+            auto it = find_if(tmpSquare.legalSquares.begin(), tmpSquare.legalSquares.end(), [key] (const auto& p) {return (key.first == p.first && key.second == p.second);});
+
+            if (square->pieceColor != tmpSquare.pieceColor
+                && tmpSquare.pieceColor==turn
+                && (tmpSquare.file != square->file || tmpSquare.rank != square->rank)
+                &&  it != tmpSquare.legalSquares.end())
+            {
+
                 square->assign(tmpSquare);
                 board[tmpSquare.file][tmpSquare.rank].assign(emptySquare);
                 turn = turn==1 ? 2 : 1;
-
-                if (square->pieceType == 1 && square->pieceColor == 1) {
-                    cout << (char)(square->file+1) << square->rank+1 << endl;
-                    cout << square->file << square->rank+1 << endl;
-                    cout << (char)(square->file-1) << square->rank+1 << endl;
-                }
 
             } else {
                 board[tmpSquare.file][tmpSquare.rank].assign(tmpSquare);
