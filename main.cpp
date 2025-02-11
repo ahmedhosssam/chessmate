@@ -94,10 +94,9 @@ int main() {
                     board.board[file][rank].has_piece = true;
                     board.turn = board.turn == P_WHITE ? P_BLACK : P_WHITE;
 
-                    temp_square.piece.image = empty;
+                    temp_square = empty_square;
                     temp_piece.image = empty;
                     assigned = true;
-                    cout << file << rank << endl;
                     break;
                 }
             }

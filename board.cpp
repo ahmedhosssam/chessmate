@@ -42,7 +42,7 @@ vector<Square*> Piece::getLegalSquares(map<char, vector<Square>> &board) {
             if (i == 0) { continue; }
             init_file = cur_square[0];
             init_rank = (cur_square[1] - '0')+i;
-            if (init_rank<=0 || init_rank>=8) { continue; }
+            if (init_rank<=0 || init_rank>8) { continue; }
             for(char ch = init_file+1; ch <= 'h'; ch++) {
                 if (board[ch][init_rank].has_piece) {
                     if (board[ch][init_rank].piece.piece_color != piece_color) {
@@ -58,7 +58,7 @@ vector<Square*> Piece::getLegalSquares(map<char, vector<Square>> &board) {
             if (i == 0) { continue; }
             init_file = cur_square[0]-1;
             init_rank = (cur_square[1] - '0')+i;
-            if (init_rank<=0 || init_rank>=8) { continue; }
+            if (init_rank<=0 || init_rank>8) { continue; }
             for(char ch = init_file; ch >= 'a'; ch--) {
                 if (board[ch][init_rank].has_piece) {
                     if (board[ch][init_rank].piece.piece_color != piece_color) {
@@ -68,7 +68,7 @@ vector<Square*> Piece::getLegalSquares(map<char, vector<Square>> &board) {
                 }
                 legalSquares.push_back(&board[ch][init_rank]);
                 init_rank+=i;
-                if (init_rank<=0 || init_rank>=8) { break;; }
+                if (init_rank<=0 || init_rank>8) { break; }
             }
         }
     }
