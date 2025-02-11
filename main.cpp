@@ -8,6 +8,8 @@
 #define screenHeight 1000
 #define squareWidth 125
 
+#define TRANSPARENT_RED Color{ 230, 41, 55, 100 }
+
 using namespace std;
 
 int main() {
@@ -69,7 +71,7 @@ int main() {
                     Square* square = sq_vec[i];
                     int posX = square->x;
                     int posY = square->y;
-                    DrawRectangle(posX, posY, squareWidth-1, squareWidth-1, RED);
+                    DrawRectangle(posX, posY, squareWidth, squareWidth, TRANSPARENT_RED);
                 }
                 DrawTexture(temp_piece.image, x-60, y-60, WHITE);
             }
