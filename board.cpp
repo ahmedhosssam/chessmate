@@ -33,6 +33,7 @@ vector<Square*> Piece::getLegalSquares(map<char, vector<Square>> &board) {
             }
         }
     }
+
     if (piece_type == QUEEN || piece_type == BISHOP) {
         // diagonal tracking
         char init_file = cur_square[0];
@@ -54,6 +55,7 @@ vector<Square*> Piece::getLegalSquares(map<char, vector<Square>> &board) {
                 init_rank+=i;
             }
         }
+
         for(int i = -1; i <= 1; i++) {
             if (i == 0) { continue; }
             init_file = cur_square[0]-1;
@@ -72,12 +74,16 @@ vector<Square*> Piece::getLegalSquares(map<char, vector<Square>> &board) {
             }
         }
     }
+
     if (piece_type == KING) {
     }
+
     if (piece_type == KNIGHT) {
     }
+
     if (piece_type == PAWN) {
     }
+
     return legalSquares;
 }
 
@@ -102,7 +108,7 @@ Board::Board() {
             sq.file = ch;
             sq.rank = idx;
 
-            sq.color = (s%2==1) ? DARKPURPLE : RAYWHITE;
+            sq.color = (s%2==1) ? RAYWHITE : DARKPURPLE;
             sq.x = fileInc;
             sq.y = rankInc;
             board[ch].push_back(sq);
