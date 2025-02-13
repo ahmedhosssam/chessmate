@@ -55,8 +55,8 @@ public:
 class Board {
 public:
     map<char, vector<Square>> board;
-    //string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"; // standard fen
-    string fen = "rnbqkbnr/8/8/8/8/8/8/RNBQKBNR";  // for debugging wihout pawns
+    string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"; // standard fen
+    //string fen = "rnbqkbnr/8/8/8/8/8/8/RNBQKBNR";  // for debugging wihout pawns
     int turn = P_WHITE;
     int assign_ok = 0; // to check if we can assign the selected piece in the selected square
 

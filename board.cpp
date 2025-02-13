@@ -75,13 +75,118 @@ vector<Square*> Piece::getLegalSquares(map<char, vector<Square>> &board) {
         }
     }
 
-    if (piece_type == KING) {
+    if (piece_type == PAWN) {
+        int rank_inc = (piece_color == P_WHITE ? 1 : -1);
+
+        char file = cur_square[0];
+        int rank = (cur_square[1] - '0');
+
+        int new_rank = (cur_square[1] - '0') + rank_inc;
+
+        if (!board[file][new_rank].has_piece) {
+            legalSquares.push_back(&board[file][new_rank]);
+        }
+
+        if ((rank == 2 && piece_color == P_WHITE) || (rank == 7 && piece_color == P_BLACK) && !board[file][new_rank+rank_inc].has_piece) {
+            // if the pawn has not yet moved, we should include a second legal square.
+            legalSquares.push_back(&board[file][new_rank+rank_inc]);
+        }
+        
+        // capturing
+        for(int i = -1; i <= 1; i++) {
+            if (i == 0) { continue; }
+            char new_file = (char) (file+i);
+            if (new_file < 'a' || new_file > 'h') { continue; }
+            if (board[new_file][new_rank].has_piece && board[new_file][new_rank].piece.piece_color != piece_color) {
+                legalSquares.push_back(&board[new_file][new_rank]);
+            }
+        }
     }
 
     if (piece_type == KNIGHT) {
+        vector<pair<int, int>> knight_moves = {
+            {1, 2},
+            {1, -2},
+            {-1, 2},
+            {-1, -2},
+            {2, 1},
+            {2, -1},
+            {-2, 1},
+            {-2, -1},
+        };
+
+        char file = cur_square[0];
+        int rank = (cur_square[1] - '0');
+
+        for(int i = 0; i < 8; i++) {
+            char new_file = (char)(file+knight_moves[i].first);
+            int new_rank = rank+knight_moves[i].second;
+
+            if (new_file < 'a'
+                || new_file > 'h'
+                || new_rank < 1
+                || new_rank > 8
+                || (board[new_file][new_rank].has_piece && board[new_file][new_rank].piece.piece_color == piece_color))
+            {
+                continue;
+            }
+
+            legalSquares.push_back(&board[new_file][new_rank]);
+        }
     }
 
-    if (piece_type == PAWN) {
+    if (piece_type == KING) {
+        char file = cur_square[0];
+        int rank = (cur_square[1] - '0');
+
+        vector<pair<int, int>> king_moves = {
+            {1, 1},
+            {1, -1},
+            {-1, 1},
+            {-1, -1},
+            {0, 1},
+            {0, -1},
+            {1, 0},
+            {-1, 0},
+        };
+
+        for(int i = 0; i < 8; i++) {
+            char new_file = (char)(file+king_moves[i].first);
+            int new_rank = rank+king_moves[i].second;
+            if (new_file < 'a'
+                || new_file > 'h'
+                || new_rank < 1
+                || new_rank > 8
+                || (board[new_file][new_rank].has_piece && board[new_file][new_rank].piece.piece_color == piece_color)) {
+                continue;
+            }
+
+            int ok = 1;
+
+            for(int idx = 1; idx <= 8; idx++) {
+                for(char ch = 'a'; ch <= 'h'; ch++) {
+                    if (ch == file && idx == rank) {
+                        continue;
+                    }
+                    Square* square = &board[ch][idx];
+                    if (square->piece.piece_type == KING) {
+                        continue;
+                    }
+                    if (square->has_piece && square->piece.piece_color != piece_color) {
+                        vector<Square*> sq_vec = board[ch][idx].piece.getLegalSquares(board);
+                        for(int j = 0; j < sq_vec.size(); j++) {
+                            Square* sq = sq_vec[j];
+                            if (sq->file == new_file && sq->rank == new_rank) {
+                                ok = 0;
+                            }
+                        }
+                    }
+                }
+            }
+            if (ok) {
+                legalSquares.push_back(&board[new_file][new_rank]);
+            }
+        }
     }
 
     return legalSquares;
