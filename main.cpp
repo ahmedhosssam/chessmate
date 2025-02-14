@@ -25,6 +25,7 @@ int main() {
     Square temp_square;
     Square empty_square;
     Piece temp_piece;
+    Piece empty_piece;
     Texture2D empty;
 
     while (!WindowShouldClose()) {
@@ -88,6 +89,7 @@ int main() {
 
                 if (l_file == file && l_rank == rank) {
                     board.board[prev_file][prev_rank].has_piece = false;
+                    board.board[prev_file][prev_rank].piece = empty_piece;
 
                     board.board[file][rank].piece = temp_piece;
                     board.board[file][rank].piece.cur_square = file+to_string(rank);
@@ -101,8 +103,6 @@ int main() {
                 }
             }
             if (!assigned) {
-                board.board[prev_file][prev_rank].has_piece = true;
-
                 board.board[prev_file][prev_rank].piece = temp_piece;
                 temp_square = empty_square;
                 temp_piece.image = empty;
