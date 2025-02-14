@@ -4,16 +4,16 @@
 
 #include "raylib.h"
 
-#define screenWidth 1000
-#define screenHeight 1000
-#define squareWidth 125
+#define SCREENWIDTH 1000
+#define SCREENHEIGHT 1000
+#define SQUAREWIDTH 125
 
 #define TRANSPARENT_RED Color{ 230, 41, 55, 100 }
 
 using namespace std;
 
 int main() {
-    InitWindow(screenWidth, screenHeight, "Chessmate");
+    InitWindow(SCREENWIDTH, SCREENHEIGHT, "Chessmate");
 
     SetTargetFPS(60);
 
@@ -45,7 +45,7 @@ int main() {
                     rank = square.rank;
                 }
 
-                DrawRectangle(posX, posY, squareWidth, squareWidth, square.color);
+                DrawRectangle(posX, posY, SQUAREWIDTH, SQUAREWIDTH, square.color);
                 DrawTexture(square.piece.image, square.x, square.y, WHITE);
             }
         }
@@ -67,19 +67,19 @@ int main() {
 
         if (IsMouseButtonDown(0)) {
             if (prev_rank != -1) {
-                vector<Square*> sq_vec = board.board[prev_file][prev_rank].piece.getLegalSquares(board.board);
+                vector<Square*> sq_vec = board.board[prev_file][prev_rank].piece.get_legal_squares(board.board);
                 for(int i = 0; i < sq_vec.size(); i++) {
                     Square* square = sq_vec[i];
                     int posX = square->x;
                     int posY = square->y;
-                    DrawRectangle(posX, posY, squareWidth, squareWidth, TRANSPARENT_RED);
+                    DrawRectangle(posX, posY, SQUAREWIDTH, SQUAREWIDTH, TRANSPARENT_RED);
                 }
                 DrawTexture(temp_piece.image, x-60, y-60, WHITE);
             }
         }
 
         if (IsMouseButtonReleased(0) && board.assign_ok) {
-            vector<Square*> sq_vec = board.board[prev_file][prev_rank].piece.getLegalSquares(board.board);
+            vector<Square*> sq_vec = board.board[prev_file][prev_rank].piece.get_legal_squares(board.board);
             bool assigned = false;
 
             for(int i = 0; i < sq_vec.size(); i++) {

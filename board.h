@@ -35,7 +35,7 @@ public:
     string cur_square;
     vector<Square*> legalSquares;
 
-    vector<Square*> getLegalSquares(map<char, vector<Square>> &board);
+    vector<Square*> get_legal_squares(map<char, vector<Square>> &board);
 };
 
 class Square {

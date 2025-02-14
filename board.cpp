@@ -1,6 +1,6 @@
 #include "board.h"
 
-vector<Square*> Piece::getLegalSquares(map<char, vector<Square>> &board) {
+vector<Square*> Piece::get_legal_squares(map<char, vector<Square>> &board) {
     legalSquares.clear();
     if (piece_type == QUEEN || piece_type == ROOK) {
         // horizontal and vertical tracking
@@ -26,6 +26,8 @@ vector<Square*> Piece::getLegalSquares(map<char, vector<Square>> &board) {
                 if (board[init_file][idx].has_piece) {
                     if (board[init_file][idx].piece.piece_color != piece_color) {
                         legalSquares.push_back(&board[init_file][idx]);
+                    } else {
+                        //controlling_squares.push_back(&board[init_file][idx]);
                     }
                     break;
                 }
@@ -186,7 +188,7 @@ vector<Square*> Piece::getLegalSquares(map<char, vector<Square>> &board) {
                     }
 
                     if (square->has_piece && square->piece.piece_color != piece_color) {
-                        vector<Square*> sq_vec = board[ch][idx].piece.getLegalSquares(board);
+                        vector<Square*> sq_vec = board[ch][idx].piece.get_legal_squares(board);
                         for(int j = 0; j < sq_vec.size(); j++) {
                             Square* sq = sq_vec[j];
                             if (sq->file == new_file && sq->rank == new_rank) {
