@@ -165,13 +165,26 @@ vector<Square*> Piece::getLegalSquares(map<char, vector<Square>> &board) {
 
             for(int idx = 1; idx <= 8; idx++) {
                 for(char ch = 'a'; ch <= 'h'; ch++) {
-                    if (ch == file && idx == rank) {
+                    if (board[ch][idx].piece.piece_color == piece_color) {
                         continue;
                     }
+
                     Square* square = &board[ch][idx];
+
                     if (square->piece.piece_type == KING) {
                         continue;
                     }
+
+                    if (square->piece.piece_type == PAWN) {
+                        int rank_inc = (square->piece.piece_color == P_WHITE ? 1 : -1);
+                        char pawn_file = square->file;
+                        int pawn_rank = square->rank;
+                        if (((char)(pawn_file+1) == new_file || (char)(pawn_file-1) == new_file) && (pawn_rank+rank_inc) == new_rank) {
+                            ok = 0;
+                        }
+                        continue;
+                    }
+
                     if (square->has_piece && square->piece.piece_color != piece_color) {
                         vector<Square*> sq_vec = board[ch][idx].piece.getLegalSquares(board);
                         for(int j = 0; j < sq_vec.size(); j++) {
@@ -183,6 +196,7 @@ vector<Square*> Piece::getLegalSquares(map<char, vector<Square>> &board) {
                     }
                 }
             }
+
             if (ok) {
                 legalSquares.push_back(&board[new_file][new_rank]);
             }
