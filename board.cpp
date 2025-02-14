@@ -291,22 +291,37 @@ Board::Board() {
     texture_map['k'] = tk;
     texture_map['p'] = tp;
 
+    // fen parsing
+    istringstream fen_stream(fen);
+    string token;
+    vector<string> tokens;
+
+    while (fen_stream >> token) {
+        tokens.push_back(token);
+    }
+
     int rank = 8;
     char file = 'a';
 
-    // fen parsing
-    for(int i = 0; i < fen.length(); i++) {
+    for(int i = 0; i < tokens[0].length(); i++) {
         if (fen[i] >= 'a' && fen[i] <= 'z' || fen[i] >= 'A' && fen[i] <= 'Z') {
             board[file][rank].piece.image = texture_map[fen[i]];
             board[file][rank].piece.piece_color = (fen[i] >= 'a' && fen[i] <= 'z') ? P_BLACK : P_WHITE;
             board[file][rank].piece.piece_type = tolower(fen[i]);
             board[file][rank].piece.cur_square = file+to_string(rank);
             board[file][rank].has_piece = true;
+        } else if (fen[i] >= '1' && fen[i] <= '8') {
+            file = (char)(file + (fen[i] - '0' - 1));
+            if (file>'h') { file = 'a'; }
         }
+        
         file++;
+
         if (fen[i]=='/') {
             rank--;
             file = 'a';
         }
     }
+
+    turn = (tokens[1] == "w" ? P_WHITE : P_BLACK);
 }

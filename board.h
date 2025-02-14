@@ -4,6 +4,7 @@
 #include "raylib.h"
 
 #include <iostream>
+#include <sstream>
 #include <vector>
 #include <map>
 
@@ -56,8 +57,15 @@ public:
 class Board {
 public:
     map<char, vector<Square>> board;
-    string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"; // standard fen
-    //string fen = "rnbqkbnr/8/8/8/8/8/8/RNBQKBNR";  // for debugging wihout pawns
+    string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"; // standard fen
+    
+    /* These are testing fen notations:
+    string fen = "r1bq1rk1/pp1p1ppp/4pn2/2b5/2PN4/6P1/PP2PPBP/RN1Q1RK1 b - - 4 9";
+    string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    string fen = "r1bqkb1r/pp1p1ppp/2n1pn2/8/2PB4/5NP1/PP2PP1P/RN1QKB1R w KQkq - 0 6";
+    string fen = "rnbqkbnr/8/8/8/8/8/8/RNBQKBNR";
+    */
+    
     int turn = P_WHITE;
     int assign_ok = 0; // to check if we can assign the selected piece in the selected square
 
