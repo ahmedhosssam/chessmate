@@ -33,7 +33,8 @@ public:
     int piece_color;
     char piece_type;
     string cur_square;
-    vector<Square*> legalSquares;
+    vector<Square*> legal_squares;
+    vector<Square*> controlling_squares;
 
     vector<Square*> get_legal_squares(map<char, vector<Square>> &board);
 };

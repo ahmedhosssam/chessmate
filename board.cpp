@@ -1,7 +1,7 @@
 #include "board.h"
 
 vector<Square*> Piece::get_legal_squares(map<char, vector<Square>> &board) {
-    legalSquares.clear();
+    legal_squares.clear();
     if (piece_type == QUEEN || piece_type == ROOK) {
         // horizontal and vertical tracking
         char init_file = cur_square[0];
@@ -14,24 +14,24 @@ vector<Square*> Piece::get_legal_squares(map<char, vector<Square>> &board) {
             for(char ch = init_file+i; ch <= 'h' && ch >= 'a'; ch+=i) {
                 if (board[ch][init_rank].has_piece) {
                     if (board[ch][init_rank].piece.piece_color != piece_color) {
-                        legalSquares.push_back(&board[ch][init_rank]);
+                        legal_squares.push_back(&board[ch][init_rank]);
                     }
                     break;
                 }
-                legalSquares.push_back(&board[ch][init_rank]);
+                legal_squares.push_back(&board[ch][init_rank]);
             }
 
             // vertical 
             for(int idx = init_rank+i; idx <= 8 && idx >= 1; idx+=i) {
                 if (board[init_file][idx].has_piece) {
                     if (board[init_file][idx].piece.piece_color != piece_color) {
-                        legalSquares.push_back(&board[init_file][idx]);
+                        legal_squares.push_back(&board[init_file][idx]);
                     } else {
-                        //controlling_squares.push_back(&board[init_file][idx]);
+                        controlling_squares.push_back(&board[init_file][idx]);
                     }
                     break;
                 }
-                legalSquares.push_back(&board[init_file][idx]);
+                legal_squares.push_back(&board[init_file][idx]);
             }
         }
     }
@@ -49,11 +49,13 @@ vector<Square*> Piece::get_legal_squares(map<char, vector<Square>> &board) {
             for(char ch = init_file+1; ch <= 'h'; ch++) {
                 if (board[ch][init_rank].has_piece) {
                     if (board[ch][init_rank].piece.piece_color != piece_color) {
-                        legalSquares.push_back(&board[ch][init_rank]);
+                        legal_squares.push_back(&board[ch][init_rank]);
+                    } else {
+                        controlling_squares.push_back(&board[ch][init_rank]);
                     }
                     break;
                 }
-                legalSquares.push_back(&board[ch][init_rank]);
+                legal_squares.push_back(&board[ch][init_rank]);
                 init_rank+=i;
             }
         }
@@ -66,11 +68,13 @@ vector<Square*> Piece::get_legal_squares(map<char, vector<Square>> &board) {
             for(char ch = init_file; ch >= 'a'; ch--) {
                 if (board[ch][init_rank].has_piece) {
                     if (board[ch][init_rank].piece.piece_color != piece_color) {
-                        legalSquares.push_back(&board[ch][init_rank]);
+                        legal_squares.push_back(&board[ch][init_rank]);
+                    } else {
+                        controlling_squares.push_back(&board[ch][init_rank]);
                     }
                     break;
                 }
-                legalSquares.push_back(&board[ch][init_rank]);
+                legal_squares.push_back(&board[ch][init_rank]);
                 init_rank+=i;
                 if (init_rank<=0 || init_rank>8) { break; }
             }
@@ -86,12 +90,12 @@ vector<Square*> Piece::get_legal_squares(map<char, vector<Square>> &board) {
         int new_rank = (cur_square[1] - '0') + rank_inc;
 
         if (!board[file][new_rank].has_piece) {
-            legalSquares.push_back(&board[file][new_rank]);
+            legal_squares.push_back(&board[file][new_rank]);
         }
 
         if ((rank == 2 && piece_color == P_WHITE) || (rank == 7 && piece_color == P_BLACK) && !board[file][new_rank+rank_inc].has_piece) {
             // if the pawn has not yet moved, we should include a second legal square.
-            legalSquares.push_back(&board[file][new_rank+rank_inc]);
+            legal_squares.push_back(&board[file][new_rank+rank_inc]);
         }
         
         // capturing
@@ -100,7 +104,7 @@ vector<Square*> Piece::get_legal_squares(map<char, vector<Square>> &board) {
             char new_file = (char) (file+i);
             if (new_file < 'a' || new_file > 'h') { continue; }
             if (board[new_file][new_rank].has_piece && board[new_file][new_rank].piece.piece_color != piece_color) {
-                legalSquares.push_back(&board[new_file][new_rank]);
+                legal_squares.push_back(&board[new_file][new_rank]);
             }
         }
     }
@@ -124,16 +128,14 @@ vector<Square*> Piece::get_legal_squares(map<char, vector<Square>> &board) {
             char new_file = (char)(file+knight_moves[i].first);
             int new_rank = rank+knight_moves[i].second;
 
-            if (new_file < 'a'
-                || new_file > 'h'
-                || new_rank < 1
-                || new_rank > 8
-                || (board[new_file][new_rank].has_piece && board[new_file][new_rank].piece.piece_color == piece_color))
-            {
+            if (new_file < 'a' || new_file > 'h' || new_rank < 1 || new_rank > 8) {
                 continue;
             }
-
-            legalSquares.push_back(&board[new_file][new_rank]);
+            if ((board[new_file][new_rank].has_piece && board[new_file][new_rank].piece.piece_color == piece_color)) {
+                controlling_squares.push_back(&board[new_file][new_rank]);
+            } else {
+                legal_squares.push_back(&board[new_file][new_rank]);
+            }
         }
     }
 
@@ -188,9 +190,16 @@ vector<Square*> Piece::get_legal_squares(map<char, vector<Square>> &board) {
                     }
 
                     if (square->has_piece && square->piece.piece_color != piece_color) {
-                        vector<Square*> sq_vec = board[ch][idx].piece.get_legal_squares(board);
-                        for(int j = 0; j < sq_vec.size(); j++) {
-                            Square* sq = sq_vec[j];
+                        vector<Square*> legal_sq_vec = board[ch][idx].piece.get_legal_squares(board);
+                        vector<Square*> ctrl_sq_vec = board[ch][idx].piece.controlling_squares;
+                        for(int j = 0; j < legal_sq_vec.size(); j++) {
+                            Square* sq = legal_sq_vec[j];
+                            if (sq->file == new_file && sq->rank == new_rank) {
+                                ok = 0;
+                            }
+                        }
+                        for(int j = 0; j < ctrl_sq_vec.size(); j++) {
+                            Square* sq = ctrl_sq_vec[j];
                             if (sq->file == new_file && sq->rank == new_rank) {
                                 ok = 0;
                             }
@@ -200,12 +209,12 @@ vector<Square*> Piece::get_legal_squares(map<char, vector<Square>> &board) {
             }
 
             if (ok) {
-                legalSquares.push_back(&board[new_file][new_rank]);
+                legal_squares.push_back(&board[new_file][new_rank]);
             }
         }
     }
 
-    return legalSquares;
+    return legal_squares;
 }
 
 Board::Board() {
