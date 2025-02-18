@@ -67,7 +67,7 @@ int main() {
 
         if (IsMouseButtonDown(0)) {
             if (prev_rank != -1) {
-                vector<Square*> sq_vec = board.board[prev_file][prev_rank].piece.get_legal_squares(board.board);
+                vector<Square*> sq_vec = board.board[prev_file][prev_rank].piece.get_legal_squares(board);
                 for(int i = 0; i < sq_vec.size(); i++) {
                     Square* square = sq_vec[i];
                     int posX = square->x;
@@ -79,7 +79,7 @@ int main() {
         }
 
         if (IsMouseButtonReleased(0) && board.assign_ok) {
-            vector<Square*> sq_vec = board.board[prev_file][prev_rank].piece.get_legal_squares(board.board);
+            vector<Square*> sq_vec = board.board[prev_file][prev_rank].piece.get_legal_squares(board);
             bool assigned = false;
 
             for(int i = 0; i < sq_vec.size(); i++) {

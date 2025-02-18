@@ -37,7 +37,7 @@ public:
     vector<Square*> legal_squares;
     vector<Square*> controlling_squares;
 
-    vector<Square*> get_legal_squares(map<char, vector<Square>> &board);
+    vector<Square*> get_legal_squares(Board &board);
 };
 
 class Square {
@@ -72,6 +72,7 @@ public:
     int assign_ok = 0; // to check if we can assign the selected piece in the selected square
 
     Board();
+    bool is_same_color(Piece *piece1, Piece *piece2);
 };
 
 #endif 
