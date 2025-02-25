@@ -38,6 +38,8 @@ public:
     vector<Square*> controlling_squares;
 
     vector<Square*> get_legal_squares(Board &board);
+    char get_file(); // return the file of the current square
+    int get_rank(); // return the rank of the current square
 };
 
 class Square {

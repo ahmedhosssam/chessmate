@@ -7,8 +7,8 @@ vector<Square*> Piece::get_legal_squares(Board &b) {
     legal_squares.clear();
     if (piece_type == QUEEN || piece_type == ROOK) {
         // horizontal and vertical tracking
-        char init_file = cur_square[0];
-        int init_rank = cur_square[1] - '0';
+        char init_file = this->get_file();
+        int init_rank = this->get_rank();
 
         for(int i = -1; i <= 1; i++) {
             if (i == 0) { continue; }
@@ -41,8 +41,8 @@ vector<Square*> Piece::get_legal_squares(Board &b) {
 
     if (piece_type == QUEEN || piece_type == BISHOP) {
         // diagonal tracking
-        char init_file = cur_square[0];
-        int init_rank = cur_square[1] - '0';
+        char init_file = this->get_file();
+        int init_rank = this->get_rank();
 
         for(int i = -1; i <= 1; i++) {
             if (i == 0) { continue; }
@@ -87,10 +87,10 @@ vector<Square*> Piece::get_legal_squares(Board &b) {
     if (piece_type == PAWN) {
         int rank_inc = (piece_color == P_WHITE ? 1 : -1);
 
-        char file = cur_square[0];
-        int rank = (cur_square[1] - '0');
+        char file = this->get_file();
+        int rank = this->get_rank();
 
-        int new_rank = (cur_square[1] - '0') + rank_inc;
+        int new_rank = (rank) + rank_inc;
 
         if (!board[file][new_rank].has_piece) {
             legal_squares.push_back(&board[file][new_rank]);
@@ -124,8 +124,8 @@ vector<Square*> Piece::get_legal_squares(Board &b) {
             {-2, -1},
         };
 
-        char file = cur_square[0];
-        int rank = (cur_square[1] - '0');
+        char file = this->get_file();
+        int rank = this->get_rank();
 
         for(int i = 0; i < 8; i++) {
             char new_file = (char)(file+knight_moves[i].first);
@@ -143,8 +143,8 @@ vector<Square*> Piece::get_legal_squares(Board &b) {
     }
 
     if (piece_type == KING) {
-        char file = cur_square[0];
-        int rank = (cur_square[1] - '0');
+        char file = this->get_file();
+        int rank = this->get_rank();
 
         vector<pair<int, int>> king_moves = {
             {1, 1},
@@ -220,6 +220,14 @@ vector<Square*> Piece::get_legal_squares(Board &b) {
     }
 
     return legal_squares;
+}
+
+char Piece::get_file() {
+    return this->cur_square[0];
+}
+
+int Piece::get_rank() {
+    return this->cur_square[1] - '0';
 }
 
 Board::Board() {
