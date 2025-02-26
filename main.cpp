@@ -10,8 +10,6 @@
 
 #define TRANSPARENT_RED Color{ 230, 41, 55, 100 }
 
-using namespace std;
-
 int main() {
     InitWindow(SCREENWIDTH, SCREENHEIGHT, "Chessmate");
 
@@ -36,17 +34,18 @@ int main() {
 
         for(int idx = 1; idx <= 8; idx++) {
             for(char ch = 'a'; ch <= 'h'; ch++) {
-                Square square = board.board[ch][idx];
-                int posX = square.x;
-                int posY = square.y;
+                Square* square = &board.board[ch][idx];
+                square->piece.update_legal_squares(board);
+                int posX = square->x;
+                int posY = square->y;
 
                 if (x >= posX && x <= (posX+125) && y >= posY && y <= (posY+125)) {
-                    file = square.file;
-                    rank = square.rank;
+                    file = square->file;
+                    rank = square->rank;
                 }
 
-                DrawRectangle(posX, posY, SQUAREWIDTH, SQUAREWIDTH, square.color);
-                DrawTexture(square.piece.image, square.x, square.y, WHITE);
+                DrawRectangle(posX, posY, SQUAREWIDTH, SQUAREWIDTH, square->color);
+                DrawTexture(square->piece.image, square->x, square->y, WHITE);
             }
         }
 
@@ -67,19 +66,21 @@ int main() {
 
         if (IsMouseButtonDown(0)) {
             if (prev_rank != -1) {
-                vector<Square*> sq_vec = board.board[prev_file][prev_rank].piece.get_legal_squares(board);
+                std::vector<Square*> sq_vec = board.board[prev_file][prev_rank].piece.get_legal_squares();
+
                 for(int i = 0; i < sq_vec.size(); i++) {
                     Square* square = sq_vec[i];
                     int posX = square->x;
                     int posY = square->y;
                     DrawRectangle(posX, posY, SQUAREWIDTH, SQUAREWIDTH, TRANSPARENT_RED);
                 }
+
                 DrawTexture(temp_piece.image, x-60, y-60, WHITE);
             }
         }
 
         if (IsMouseButtonReleased(0) && board.assign_ok) {
-            vector<Square*> sq_vec = board.board[prev_file][prev_rank].piece.get_legal_squares(board);
+            std::vector<Square*> sq_vec = board.board[prev_file][prev_rank].piece.get_legal_squares();
             bool assigned = false;
 
             for(int i = 0; i < sq_vec.size(); i++) {
@@ -92,7 +93,7 @@ int main() {
                     board.board[prev_file][prev_rank].piece = empty_piece;
 
                     board.board[file][rank].piece = temp_piece;
-                    board.board[file][rank].piece.cur_square = file+to_string(rank);
+                    board.board[file][rank].piece.cur_square = file+std::to_string(rank);
                     board.board[file][rank].has_piece = true;
                     board.turn = board.turn == P_WHITE ? P_BLACK : P_WHITE;
 
@@ -102,6 +103,7 @@ int main() {
                     break;
                 }
             }
+
             if (!assigned) {
                 board.board[prev_file][prev_rank].piece = temp_piece;
                 temp_square = empty_square;

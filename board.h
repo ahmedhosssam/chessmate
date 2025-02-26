@@ -8,9 +8,9 @@
 #include <vector>
 #include <map>
 
-#define screenWidth 1000
-#define screenHeight 1000
-#define squareWidth 125
+#define SCREENWIDTH 1000
+#define SCREENHEIGHT 1000
+#define SQUAREWIDTH 125
 
 #define KING 'k'
 #define PAWN 'p'
@@ -26,18 +26,17 @@ class Piece;
 class Square;
 class Board;
 
-using namespace std;
-
 class Piece {
 public:
     Texture2D image;
     int piece_color;
     char piece_type;
-    string cur_square;
-    vector<Square*> legal_squares;
-    vector<Square*> controlling_squares;
+    std::string cur_square;
+    std::vector<Square*> legal_squares;
+    std::vector<Square*> controlling_squares;
 
-    vector<Square*> get_legal_squares(Board &board);
+    void update_legal_squares(Board &board);
+    std::vector<Square*> get_legal_squares();
     char get_file(); // return the file of the current square
     int get_rank(); // return the rank of the current square
 };
@@ -58,8 +57,8 @@ public:
 
 class Board {
 public:
-    map<char, vector<Square>> board;
-    string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"; // standard fen
+    std::map<char, std::vector<Square>> board;
+    std::string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"; // standard fen
     
     /* These are testing fen notations:
     string fen = "pppppppp/pppppppp/8/8/8/8/PPPPPPPP/PPPPPPPP w KQkq - 0 1"; 

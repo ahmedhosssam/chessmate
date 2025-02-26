@@ -1,10 +1,11 @@
 #include "board.h"
 
 //vector<Square*> Piece::get_legal_squares(map<char, vector<Square>> &board) {
-vector<Square*> Piece::get_legal_squares(Board &b) {
+void Piece::update_legal_squares(Board &b) {
     // TODO: Operator overloading [] for board class
-    map<char, vector<Square>> &board = b.board;
+    std::map<char, std::vector<Square>> &board = b.board;
     legal_squares.clear();
+
     if (piece_type == QUEEN || piece_type == ROOK) {
         // horizontal and vertical tracking
         char init_file = this->get_file();
@@ -46,9 +47,13 @@ vector<Square*> Piece::get_legal_squares(Board &b) {
 
         for(int i = -1; i <= 1; i++) {
             if (i == 0) { continue; }
+
             init_file = cur_square[0];
-            init_rank = (cur_square[1] - '0')+i;
-            if (init_rank<=0 || init_rank>8) { continue; }
+            init_file = this->get_file();
+            init_rank = this->get_rank()+i;
+
+            if (init_rank <= 0 || init_rank > 8) { continue; }
+
             for(char ch = init_file+1; ch <= 'h'; ch++) {
                 if (board[ch][init_rank].has_piece) {
                     if (!b.is_same_color(&board[ch][init_rank].piece, this)) {
@@ -113,7 +118,7 @@ vector<Square*> Piece::get_legal_squares(Board &b) {
     }
 
     if (piece_type == KNIGHT) {
-        vector<pair<int, int>> knight_moves = {
+        std::vector<std::pair<int, int>> knight_moves = {
             {1, 2},
             {1, -2},
             {-1, 2},
@@ -146,7 +151,7 @@ vector<Square*> Piece::get_legal_squares(Board &b) {
         char file = this->get_file();
         int rank = this->get_rank();
 
-        vector<pair<int, int>> king_moves = {
+        std::vector<std::pair<int, int>> king_moves = {
             {1, 1},
             {1, -1},
             {-1, 1},
@@ -195,8 +200,8 @@ vector<Square*> Piece::get_legal_squares(Board &b) {
                     }
 
                     if (square->has_piece && !b.is_same_color(&board[ch][idx].piece, this)) {
-                        vector<Square*> legal_sq_vec = board[ch][idx].piece.get_legal_squares(b);
-                        vector<Square*> ctrl_sq_vec = board[ch][idx].piece.controlling_squares;
+                        std::vector<Square*> legal_sq_vec = board[ch][idx].piece.get_legal_squares();
+                        std::vector<Square*> ctrl_sq_vec = board[ch][idx].piece.controlling_squares;
                         for(int j = 0; j < legal_sq_vec.size(); j++) {
                             Square* sq = legal_sq_vec[j];
                             if (sq->file == new_file && sq->rank == new_rank) {
@@ -218,8 +223,10 @@ vector<Square*> Piece::get_legal_squares(Board &b) {
             }
         }
     }
+}
 
-    return legal_squares;
+std::vector<Square*> Piece::get_legal_squares() {
+    return this->legal_squares;
 }
 
 char Piece::get_file() {
@@ -255,9 +262,9 @@ Board::Board() {
             sq.x = fileInc;
             sq.y = rankInc;
             board[ch].push_back(sq);
-            fileInc += squareWidth;
+            fileInc += SQUAREWIDTH;
         }
-        rankInc -= squareWidth;
+        rankInc -= SQUAREWIDTH;
     }
 
     Image r = LoadImage("./pieces/white/rook.png");
@@ -274,7 +281,7 @@ Board::Board() {
     Texture2D tk = LoadTextureFromImage(k);
     Texture2D tp = LoadTextureFromImage(p);
 
-    map<char, Texture2D> texture_map;
+    std::map<char, Texture2D> texture_map;
     texture_map['R'] = tr;
     texture_map['N'] = tn;
     texture_map['B'] = tb;
@@ -305,9 +312,9 @@ Board::Board() {
     texture_map['p'] = tp;
 
     // fen parsing
-    istringstream fen_stream(fen);
-    string token;
-    vector<string> tokens;
+    std::istringstream fen_stream(fen);
+    std::string token;
+    std::vector<std::string> tokens;
 
     while (fen_stream >> token) {
         tokens.push_back(token);
@@ -321,7 +328,7 @@ Board::Board() {
             board[file][rank].piece.image = texture_map[fen[i]];
             board[file][rank].piece.piece_color = (fen[i] >= 'a' && fen[i] <= 'z') ? P_BLACK : P_WHITE;
             board[file][rank].piece.piece_type = tolower(fen[i]);
-            board[file][rank].piece.cur_square = file+to_string(rank);
+            board[file][rank].piece.cur_square = file+std::to_string(rank);
             board[file][rank].has_piece = true;
         } else if (fen[i] >= '1' && fen[i] <= '8') {
             file = (char)(file + (fen[i] - '0' - 1));
