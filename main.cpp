@@ -4,10 +4,6 @@
 
 #include "raylib.h"
 
-#define SCREENWIDTH 1000
-#define SCREENHEIGHT 1000
-#define SQUAREWIDTH 125
-
 #define TRANSPARENT_RED Color{ 230, 41, 55, 100 }
 
 int main() {

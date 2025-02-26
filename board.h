@@ -33,7 +33,8 @@ public:
     char piece_type;
     std::string cur_square;
     std::vector<Square*> legal_squares;
-    std::vector<Square*> controlling_squares;
+    std::vector<Square*> controlling_squares; // contains pieces from the same color in the legal squares 
+                                              // of the piece.
 
     void update_legal_squares(Board &board);
     std::vector<Square*> get_legal_squares();
@@ -71,9 +72,11 @@ public:
     
     int turn = P_WHITE;
     int assign_ok = 0; // to check if we can assign the selected piece in the selected square
+    int is_check = -1;
 
     Board();
     bool is_same_color(Piece *piece1, Piece *piece2);
+    void handle_check(int check_color);
 };
 
 #endif 
