@@ -25,7 +25,12 @@ void Piece::update_legal_squares(Board *b) {
                 if (board[ch][init_rank].has_piece) {
                     if (!b->is_same_color(&board[ch][init_rank].piece, this)) {
                         if (board[ch][init_rank].piece.piece_type == KING) {
-                            b->assign_check(&board[ch][init_rank].piece);
+                            b->is_check = board[ch][init_rank].piece.piece_color;
+                            for(auto sq : tmp) {
+                                b->checking_pieces_squares.push_back(sq);
+                            }
+
+                            //tmp.clear();
                         } else {
                             tmp.push_back(&board[ch][init_rank]);
                         }
@@ -36,12 +41,10 @@ void Piece::update_legal_squares(Board *b) {
                 tmp.push_back(&board[ch][init_rank]);
             }
 
-            if (b->is_check > -1) {
-                for(auto square : tmp) {
-                    b->checking_pieces_squares.push_back(square);
-                }
-                return;
+            for(auto sq : tmp) {
+                legal_squares.push_back(sq);
             }
+            tmp.clear();
 
             // vertical 
             for(int idx = init_rank+i; idx <= 8 && idx >= 1; idx+=i) {
@@ -49,6 +52,9 @@ void Piece::update_legal_squares(Board *b) {
                     if (!b->is_same_color(&board[init_file][idx].piece, this)) {
                         if (board[init_file][idx].piece.piece_type == KING) {
                             b->is_check = board[init_file][idx].piece.piece_color;
+                            for(auto sq : tmp) {
+                                b->checking_pieces_squares.push_back(sq);
+                            }
                         } else {
                             tmp.push_back(&board[init_file][idx]);
                         }
@@ -61,25 +67,18 @@ void Piece::update_legal_squares(Board *b) {
                 tmp.push_back(&board[init_file][idx]);
             }
 
-            if (b->is_check == -1) {
-                for(auto sq : tmp) {
-                    legal_squares.push_back(sq);
-                }
-
-                tmp.clear();
-            } else {
-                for(auto square : tmp) {
-                    std::cout << square->file << square->rank << std::endl;
-                    b->checking_pieces_squares.push_back(square);
-                }
-                return;
+            for(auto sq : tmp) {
+                legal_squares.push_back(sq);
             }
+
+            tmp.clear();
+
         }
     }
 
     if (piece_type == QUEEN || piece_type == BISHOP) {
         // diagonal tracking
-        if (b->is_check > -1) { return; }
+        //if (b->is_check > -1) { return; }
         char init_file = this->get_file();
         int init_rank = this->get_rank();
 
@@ -92,26 +91,14 @@ void Piece::update_legal_squares(Board *b) {
 
             if (init_rank <= 0 || init_rank > 8) { continue; }
 
-            bool check_found = false;
-
             for(char ch = init_file+1; ch <= 'h'; ch++) {
-                if (b->is_check
-                    && !b->is_same_color(&board[ch][init_rank].piece, this)
-                    && b->is_in_checking_pieces_squares(&board[ch][init_rank]))
-                {
-                    std::cout << "gg\n";
-                }
-
                 if (board[ch][init_rank].has_piece) {
                     if (!b->is_same_color(&board[ch][init_rank].piece, this)) {
                         if (board[ch][init_rank].piece.piece_type == KING) {
                             b->is_check = board[ch][init_rank].piece.piece_color;
-                            b->is_check = board[ch][init_rank].piece.piece_color;
                             for(auto sq : tmp) {
                                 b->checking_pieces_squares.push_back(sq);
                             }
-
-                            tmp.clear();
                         } else {
                             tmp.push_back(&board[ch][init_rank]);
                         }
@@ -121,26 +108,17 @@ void Piece::update_legal_squares(Board *b) {
                     break;
                 }
 
-                if (check_found) {
-                    for(auto sq : tmp) {
-                        b->checking_pieces_squares.push_back(sq);
-                    }
-
-                    tmp.clear();
-                    break;
-                }
-
                 tmp.push_back(&board[ch][init_rank]);
 
                 init_rank+=i;
             }
-        }
 
-        if (b->is_check > -1) {
-            for(auto square : b->checking_pieces_squares) {
-                std::cout << square->file << square->rank << std::endl;
+            for(auto sq : tmp) {
+                legal_squares.push_back(sq);
             }
-            return;
+
+            tmp.clear();
+
         }
 
         for(int i = -1; i <= 1; i++) {
@@ -151,16 +129,7 @@ void Piece::update_legal_squares(Board *b) {
 
             if (init_rank <= 0 || init_rank > 8) { continue; }
 
-            bool check_found = false;
-
             for(char ch = init_file; ch >= 'a'; ch--) {
-                if (b->is_check
-                    && !b->is_same_color(&board[ch][init_rank].piece, this)
-                    && b->is_in_checking_pieces_squares(&board[ch][init_rank]))
-                {
-                    std::cout << "gg\n";
-                }
-
                 if (board[ch][init_rank].has_piece) {
                     if (!b->is_same_color(&board[ch][init_rank].piece, this)) {
                         if (board[ch][init_rank].piece.piece_type == KING) {
@@ -168,8 +137,6 @@ void Piece::update_legal_squares(Board *b) {
                             for(auto sq : tmp) {
                                 b->checking_pieces_squares.push_back(sq);
                             }
-
-                            tmp.clear();
                         } else {
                             tmp.push_back(&board[ch][init_rank]);
                         }
@@ -186,13 +153,12 @@ void Piece::update_legal_squares(Board *b) {
 
                 if (init_rank<=0 || init_rank>8) { break; }
             }
-        }
 
-        if (b->is_check > -1) {
-            for(auto square : b->checking_pieces_squares) {
-                std::cout << square->file << square->rank << std::endl;
+            for(auto sq : tmp) {
+                legal_squares.push_back(sq);
             }
-            return;
+
+            tmp.clear();
         }
 
     }
@@ -479,7 +445,9 @@ bool Board::is_same_color(Piece *piece1, Piece *piece2) {
 }
 
 void Board::handle_check(int check_color) {
-    //std::cout << (check_color == 0 ? "White is in check\n" : "Black is in check\n");
+    //std::cout << (check_color == -1 ? "Nothing" : "\n");
+    //std::cout << (check_color == 0 ? "White is in check\n" : "\n");
+    //std::cout << (check_color == 1 ? "Black is in check\n" : "\n");
 }
 
 void Board::assign_check(Piece *piece) {
