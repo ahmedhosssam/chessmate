@@ -171,12 +171,13 @@ void Piece::update_legal_squares(Board *b) {
 
         int new_rank = (rank) + rank_inc;
 
-        if (b->is_check
-            && b->is_in_checking_pieces_squares(&board[file][new_rank]))
-        {
-            std::cout << this->cur_square << std::endl;
-        }
         if (!board[file][new_rank].has_piece) {
+            if (b->is_check > -1
+                && b->is_in_checking_pieces_squares(&board[file][new_rank]))
+            {
+                legal_squares.push_back(&board[file][new_rank]);
+                return;
+            }
             tmp.push_back(&board[file][new_rank]);
         }
 
@@ -457,10 +458,6 @@ void Board::assign_check(Piece *piece) {
 }
 
 bool Board::is_in_checking_pieces_squares(Square* square) {
-    for(auto sq : checking_pieces_squares) {
-        std::cout << sq->file << sq->rank << std::endl;
-    }
-
     auto it = std::find_if(this->checking_pieces_squares.begin(), this->checking_pieces_squares.end(), [&](Square* sq) {
         return sq->file == square->file && sq->rank == square->rank;
     });
