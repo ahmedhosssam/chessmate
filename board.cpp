@@ -243,6 +243,17 @@ void Piece::update_legal_squares(Board *b) {
                 tmp.push_back(&board[new_file][new_rank]);
             }
         }
+
+        if (b->is_check == board[this->get_file()][this->get_rank()].piece.piece_color) {
+            // his king is in check
+            for(auto sq : tmp) {
+                if (b->is_in_checking_pieces_squares(sq) && !sq->has_piece) {
+                    this->legal_squares.push_back(sq);
+                }
+                break;
+            }
+            return;
+        }
     }
 
     if (piece_type == KING) {
