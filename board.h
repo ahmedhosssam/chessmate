@@ -78,6 +78,7 @@ public:
     void handle_check(int check_color);
     void assign_check(Piece *piece);
     bool is_in_checking_pieces_squares(Square* square);
+    void remove_square_from_checking_squares(Square* square);
 };
 
 #endif 

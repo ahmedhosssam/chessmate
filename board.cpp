@@ -29,8 +29,6 @@ void Piece::update_legal_squares(Board *b) {
                             for(auto sq : tmp) {
                                 b->checking_pieces_squares.push_back(sq);
                             }
-
-                            //tmp.clear();
                         } else {
                             tmp.push_back(&board[ch][init_rank]);
                         }
@@ -92,6 +90,15 @@ void Piece::update_legal_squares(Board *b) {
             if (init_rank <= 0 || init_rank > 8) { continue; }
 
             for(char ch = init_file+1; ch <= 'h'; ch++) {
+                if (b->is_check == board[ch][init_rank].piece.piece_color) {
+                    // his king is in check
+                    if (!board[ch][init_rank].has_piece && b->is_in_checking_pieces_squares(&board[ch][init_rank])) {
+                        tmp.push_back(&board[ch][init_rank]);
+                    }
+                    init_rank+=i;
+                    continue;
+                }
+
                 if (board[ch][init_rank].has_piece) {
                     if (!b->is_same_color(&board[ch][init_rank].piece, this)) {
                         if (board[ch][init_rank].piece.piece_type == KING) {
@@ -130,6 +137,15 @@ void Piece::update_legal_squares(Board *b) {
             if (init_rank <= 0 || init_rank > 8) { continue; }
 
             for(char ch = init_file; ch >= 'a'; ch--) {
+                if (b->is_check == board[ch][init_rank].piece.piece_color) {
+                    // his king is in check
+                    if (!board[ch][init_rank].has_piece && b->is_in_checking_pieces_squares(&board[ch][init_rank])) {
+                        tmp.push_back(&board[ch][init_rank]);
+                    }
+                    init_rank+=i;
+                    continue;
+                }
+
                 if (board[ch][init_rank].has_piece) {
                     if (!b->is_same_color(&board[ch][init_rank].piece, this)) {
                         if (board[ch][init_rank].piece.piece_type == KING) {
@@ -172,10 +188,10 @@ void Piece::update_legal_squares(Board *b) {
         int new_rank = (rank) + rank_inc;
 
         if (!board[file][new_rank].has_piece) {
-            if (b->is_check > -1
-                && b->is_in_checking_pieces_squares(&board[file][new_rank]))
-            {
-                legal_squares.push_back(&board[file][new_rank]);
+            if (b->is_check > -1) {
+                if (b->is_in_checking_pieces_squares(&board[file][new_rank])) {
+                    legal_squares.push_back(&board[file][new_rank]);
+                } 
                 return;
             }
             tmp.push_back(&board[file][new_rank]);
@@ -467,4 +483,10 @@ bool Board::is_in_checking_pieces_squares(Square* square) {
     }
 
     return false;
+}
+
+void Board::remove_square_from_checking_squares(Square* square) {
+    this->checking_pieces_squares.erase(std::remove_if(checking_pieces_squares.begin(), checking_pieces_squares.end(), [&](Square* sq) {
+        return sq->file == square->file && sq->rank == square->rank;
+    }), checking_pieces_squares.end());
 }

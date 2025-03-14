@@ -27,6 +27,8 @@ int main() {
 
         int x = GetMousePosition().x;
         int y = GetMousePosition().y;
+        //std::cout << board.checking_pieces_squares.size() << std::endl;
+        //std::cout << board.board['c'][3].has_piece << std::endl;
 
         for(int idx = 1; idx <= 8; idx++) {
             for(char ch = 'a'; ch <= 'h'; ch++) {
@@ -104,6 +106,8 @@ int main() {
                 board.board[prev_file][prev_rank].piece = temp_piece;
                 temp_square = empty_square;
                 temp_piece.image = empty;
+            } else {
+                board.checking_pieces_squares.clear();
             }
         }
         
