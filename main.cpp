@@ -108,6 +108,7 @@ int main() {
                 temp_piece.image = empty;
             } else {
                 board.checking_pieces_squares.clear();
+                board.is_check = -1;
             }
         }
         

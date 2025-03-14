@@ -195,7 +195,7 @@ void Piece::update_legal_squares(Board *b) {
             tmp.push_back(&board[file][new_rank]);
         }
 
-        if ((rank == 2 && piece_color == P_WHITE) || (rank == 7 && piece_color == P_BLACK) && !board[file][new_rank+rank_inc].has_piece) {
+        if (((rank == 2 && piece_color == P_WHITE) || (rank == 7 && piece_color == P_BLACK)) && !board[file][new_rank+rank_inc].has_piece) {
             // if the pawn has not yet moved, we should include a second legal square.
             tmp.push_back(&board[file][new_rank+rank_inc]);
         }
