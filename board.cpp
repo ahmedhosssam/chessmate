@@ -79,6 +79,7 @@ void Piece::update_legal_squares(Board *b) {
         //if (b->is_check > -1) { return; }
         char init_file = this->get_file();
         int init_rank = this->get_rank();
+        bool has_covered_check = false; // in case there is a check and the piece can cover it.
 
         for(int i = -1; i <= 1; i++) {
             if (i == 0) { continue; }
@@ -93,9 +94,11 @@ void Piece::update_legal_squares(Board *b) {
                 if (b->is_check == board[this->get_file()][this->get_rank()].piece.piece_color) {
                     // his king is in check
                     if (!board[ch][init_rank].has_piece && b->is_in_checking_pieces_squares(&board[ch][init_rank])) {
+                        tmp.clear();
                         tmp.push_back(&board[ch][init_rank]);
+                        has_covered_check = true;
+                        break;
                     }
-                    break;
                 }
 
                 if (board[ch][init_rank].has_piece) {
@@ -119,6 +122,10 @@ void Piece::update_legal_squares(Board *b) {
                 init_rank+=i;
             }
 
+            if (b->is_check == board[this->get_file()][this->get_rank()].piece.piece_color && has_covered_check) {
+                legal_squares.push_back(tmp[0]);
+                return;
+            }
             for(auto sq : tmp) {
                 legal_squares.push_back(sq);
             }
@@ -139,9 +146,10 @@ void Piece::update_legal_squares(Board *b) {
                 if (b->is_check == board[this->get_file()][this->get_rank()].piece.piece_color) {
                     // his king is in check
                     if (!board[ch][init_rank].has_piece && b->is_in_checking_pieces_squares(&board[ch][init_rank])) {
+                        tmp.clear();
                         tmp.push_back(&board[ch][init_rank]);
+                        break;
                     }
-                    break;
                 }
 
                 if (board[ch][init_rank].has_piece) {
@@ -168,6 +176,11 @@ void Piece::update_legal_squares(Board *b) {
                 if (init_rank<=0 || init_rank>8) { break; }
             }
 
+
+            if (b->is_check == board[this->get_file()][this->get_rank()].piece.piece_color && has_covered_check) {
+                legal_squares.push_back(tmp[0]);
+                return;
+            }
             for(auto sq : tmp) {
                 legal_squares.push_back(sq);
             }
