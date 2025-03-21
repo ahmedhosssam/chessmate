@@ -185,6 +185,7 @@ void Piece::update_legal_squares(Board *b) {
 
         char file = this->get_file();
         int rank = this->get_rank();
+        bool has_covered_check = false; // in case there is a check and the piece can cover it.
 
         int new_rank = (rank) + rank_inc;
 
@@ -192,14 +193,21 @@ void Piece::update_legal_squares(Board *b) {
             if (b->is_check > -1) {
                 if (b->is_in_checking_pieces_squares(&board[file][new_rank])) {
                     legal_squares.push_back(&board[file][new_rank]);
+                    has_covered_check = true;
+                    return;
                 } 
-                return;
             }
             tmp.push_back(&board[file][new_rank]);
         }
 
         if (((rank == 2 && piece_color == P_WHITE) || (rank == 7 && piece_color == P_BLACK)) && !board[file][new_rank+rank_inc].has_piece) {
             // if the pawn has not yet moved, we should include a second legal square.
+            if (b->is_check > -1) {
+                if (b->is_in_checking_pieces_squares(&board[file][new_rank+rank_inc])) {
+                    legal_squares.push_back(&board[file][new_rank+rank_inc]);
+                } 
+                return;
+            }
             tmp.push_back(&board[file][new_rank+rank_inc]);
         }
         
