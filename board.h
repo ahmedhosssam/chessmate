@@ -63,7 +63,6 @@ public:
     std::string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"; // standard fen
     //std::string fen = "rnbqkbnr/pp1p1ppp/2p1p3/8/8/3PPP2/PPP3PP/RNBQKBNR b KQkq - 0 3"; // standard fen
     //std::string fen = "rnbqkbnr/pppp1ppp/4p3/8/Q7/5P2/PPPPP1PP/RNB1KBNR b KQkq - 0 1"; // standard fen
-    //std::string fen = "8/8/8/1q6/8/5K2/2B5/8 b - - 0 1"; // standard fen
     
     int turn = P_WHITE;
     int assign_ok = 0; // to check if we can assign the selected piece in the selected square
