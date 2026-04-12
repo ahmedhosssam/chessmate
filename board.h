@@ -34,8 +34,11 @@ public:
     char piece_type;
     std::string cur_square;
     std::vector<Square*> legal_squares;
-    std::vector<Square*> controlling_squares; // contains pieces from the same color in the legal squares 
+    std::vector<Square*> controlling_squares; // contains pieces from the same color in the legal squares
                                               // of the piece.
+
+    bool pinned = false;
+    std::pair<int,int> pin_dir = {0, 0}; // king→pinner unit vector when pinned
 
     void update_legal_squares(Board *board);
     std::vector<Square*> get_legal_squares();
@@ -68,14 +71,22 @@ public:
     int turn = P_WHITE;
     int assign_ok = 0; // to check if we can assign the selected piece in the selected square
 
+    bool white_can_castle_k = false;
+    bool white_can_castle_q = false;
+    bool black_can_castle_k = false;
+    bool black_can_castle_q = false;
+
     int is_check = -1;
+    bool double_check = false; // true when two pieces check the king simultaneously
     char checking_piece; // the piece that made a check.
     std::string checking_square; // the square of the piece that made a check.
-    std::vector<Square*> checking_pieces_squares; // legal squares of the checking piece that should be covered.
+    std::vector<Square*> checking_pieces_squares; // squares between the checker and king, plus the checker.
 
     Board();
     bool is_same_color(Piece *piece1, Piece *piece2);
 
+    void compute_checks();
+    void compute_pins();
     void handle_check(int check_color);
     void assign_check(Piece *piece);
     bool is_in_checking_pieces_squares(Square* square);
