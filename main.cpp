@@ -74,7 +74,9 @@ int main() {
         for(int idx = 1; idx <= 8; idx++) {
             for(char ch = 'a'; ch <= 'h'; ch++) {
                 Square* square = &board.board[ch][idx];
-                square->piece.update_legal_squares(&board);
+                if (square->has_piece) {
+                    square->piece.update_legal_squares(&board);
+                }
                 int posX = square->x;
                 int posY = square->y;
 
